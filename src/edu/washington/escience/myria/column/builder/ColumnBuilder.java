@@ -69,6 +69,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>> implements Readable
   }
 
   @Override
+  public Byte getByte(final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
   public ColumnBuilder<T> appendDouble(final double value) throws BufferOverflowException {
     throw new UnsupportedOperationException(getClass().getName());
   }
@@ -90,6 +95,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>> implements Readable
 
   @Override
   public ColumnBuilder<T> appendString(final String value) throws BufferOverflowException {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
+  public ColumnBuilder<T> appendByte(final Byte value) throws BufferOverflowException {
     throw new UnsupportedOperationException(getClass().getName());
   }
 
@@ -182,4 +192,10 @@ public abstract class ColumnBuilder<T extends Comparable<?>> implements Readable
   public void replaceString(@Nonnull final String value, final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
+
+  @Override
+  public void replaceByte(final Byte value, final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
 }

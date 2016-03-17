@@ -1,0 +1,44 @@
+{
+"fragments": [{
+  "operators": [
+    {
+    "relationKey": {
+      "programName": "global_join",
+      "userName": "jwang",
+      "relationName": "intTable"
+      },
+
+    "opId": 0,
+    "opName": "MyriaScan(jwang:global_join:intTable)",
+    "opType": "TableScan"
+    },
+    {
+    "opId": 1,
+    "opName": "runUDF",
+    "argChild": 0,
+    "opType": "pyUDF",
+    "filename": "/Users/parmita/myria/myria-l/myria/test.py"
+    },
+
+    {
+      "partitionFunction": {
+        "type": "MultiFieldHash",
+        "indexes": [0,1]
+        },
+        "argOverwriteTable": true,
+        "argChild": 1,
+        "opType": "DbInsert",
+        "opName": "MyriaStore(jwang:global_join:intTable)",
+        "relationKey": {
+          "programName": "global_join",
+          "userName": "jwang",
+          "relationName": "K2"
+        },
+        "opId": 2
+		}]
+}],
+"language" : "datalog",
+"rawQuery" : "select c_name from customer table",
+"logicalRa": "Sink[Apply(c_name=c_name)[Scan(public:public:myriameasurements:lineorder)]]"
+
+}

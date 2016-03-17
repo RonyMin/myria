@@ -1590,7 +1590,11 @@ public final class DataProto {
       /**
        * <code>DATETIME = 6;</code>
        */
-      DATETIME(6, 6), ;
+      DATETIME(6, 6),
+      /**
+       * <code>BYTE_VALUE = 7;</code>
+       */
+      BYTE(7, 7), ;
 
       /**
        * <code>INT = 0;</code>
@@ -1620,6 +1624,10 @@ public final class DataProto {
        * <code>DATETIME = 6;</code>
        */
       public static final int DATETIME_VALUE = 6;
+      /**
+       * <code>BYTE = 7;</code>
+       */
+      public static final int BYTE_VALUE = 7;
 
       @Override
       public final int getNumber() {
@@ -1642,6 +1650,8 @@ public final class DataProto {
             return BOOLEAN;
           case 6:
             return DATETIME;
+          case 7:
+            return BYTE;
           default:
             return null;
         }

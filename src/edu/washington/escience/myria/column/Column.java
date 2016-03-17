@@ -4,19 +4,12 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 
+import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.DateTime;
 
 import com.google.protobuf.ByteString;
 
 import edu.washington.escience.myria.Type;
-import edu.washington.escience.myria.proto.DataProto.BooleanColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.ColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.DateTimeColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.DoubleColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.FloatColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.IntColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.LongColumnMessage;
-import edu.washington.escience.myria.proto.DataProto.StringColumnMessage;
 import edu.washington.escience.myria.storage.ReadableColumn;
 import edu.washington.escience.myria.util.ImmutableIntArray;
 
@@ -64,6 +57,11 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
 
   @Override
   public abstract T getObject(int row);
+
+  @Override
+  public Bytes getBytes(final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
 
   @Override
   public String getString(final int row) {
@@ -123,6 +121,8 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
         return new IntArrayColumn(new int[] {}, 0);
       case LONG_TYPE:
         return new LongColumn(new long[] {}, 0);
+      case BYTE_TYPE:
+        return new ByteColumn(new byte[] {}, 0);
       case STRING_TYPE:
         return new StringArrayColumn(new String[] {}, 0);
     }
@@ -258,6 +258,8 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
         return defaultLongProto(column);
       case STRING_TYPE:
         return defaultStringProto(column);
+      case BYTE_TYPE:
+        return defaultByteProto(column);
     }
     throw new UnsupportedOperationException("Serializing a column of type " + column.getType());
   }
@@ -297,4 +299,5 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
     inner.setData(ByteString.copyFromUtf8(sb.toString()));
     return ColumnMessage.newBuilder().setType(ColumnMessage.Type.STRING).setStringColumn(inner).build();
   }
+
 }

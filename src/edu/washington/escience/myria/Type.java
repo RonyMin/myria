@@ -2,6 +2,7 @@ package edu.washington.escience.myria;
 
 import java.io.Serializable;
 
+import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.DateTime;
 
 import edu.washington.escience.myria.column.Column;
@@ -196,6 +197,37 @@ public enum Type implements Serializable {
     }
   },
 
+  /**
+   * byteArray type.
+   * */
+  BYTES_TYPE() {
+    @Override
+    public boolean filter(final SimplePredicate.Op op, final Column<?> BytesColumn, final int tupleIndex,
+        final Object operand) {
+      final Bytes v = bytesColumn.getBlob(tupleIndex);
+      return compare(op, v, (Bytes) operand);
+    }
+
+    @Override
+    public String toString(final Column<?> column, final int tupleIndex) {
+      return "" + column.getBytes(tupleIndex);
+    }
+
+    @Override
+    public Class<?> toJavaType() {
+      return Bytes.class;
+    }
+
+    @Override
+    public Class<?> toJavaObjectType() {
+      return toJavaType();
+    }
+
+    @Override
+    public String getName() {
+      return "Bytes";
+    }
+  },
   /**
    * Long type.
    * */
@@ -406,6 +438,16 @@ public enum Type implements Serializable {
   private static boolean compare(final SimplePredicate.Op op, final DateTime valueInTuple, final DateTime operand) {
     int compared = compareRaw(valueInTuple, operand);
     return evalOp(op, compared);
+  }
+
+  /**
+   * @param op the operation
+   * @param valueInTuple the value to be compared in a tuple
+   * @param operand the operand
+   * @return true if valueInTuple op operand.
+   */
+  private static boolean compare(final SimplePredicate.Op op, final byte[] valueInTuple, final byte[] operand) {
+    return false;
   }
 
   /**

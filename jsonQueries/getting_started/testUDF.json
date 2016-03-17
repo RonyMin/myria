@@ -1,0 +1,50 @@
+{
+"fragments": [{
+  "operators": [
+    {
+    "relationKey": {
+      "programName": "global_join",
+      "userName": "jwang",
+      "relationName": "intTable"
+      },
+
+    "opId": 0,
+    "opName": "MyriaScan(jwang:global_join:intTable)",
+    "opType": "TableScan"
+    },
+    {
+    "opId": 1,
+    "opName": "MyriaSelect(($1 < 5))",
+    "argChild": 0,
+    "opType": "Filter",
+    "argPredicate":
+    {
+        "rootExpressionOperator":
+        {
+          "type": "LT",
+          "right": {
+            "type": "CONSTANT",
+            "value": "5",
+            "valueType": "LONG_TYPE"
+          },
+          "left": {
+            "type": "VARIABLE",
+            "columnIdx": 1
+          }
+        }
+      }
+    },
+
+    {
+			"argChild": 0,
+			"opName": "MyriaSink",
+			"opId": 2,
+			"opType": "SinkRoot"
+
+		}]
+}],
+"language" : "datalog",
+"rawQuery" : "this calls a python UDF",
+"logicalRa": "Sink[Apply(c_name=c_name)[Scan(public:public:myriameasurements:lineorder)]]"
+
+}
