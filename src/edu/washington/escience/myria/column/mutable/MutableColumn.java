@@ -1,6 +1,7 @@
 package edu.washington.escience.myria.column.mutable;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 import javax.annotation.Nonnull;
 
@@ -25,6 +26,11 @@ public abstract class MutableColumn<T extends Comparable<?>> implements Cloneabl
 
   @Override
   public boolean getBoolean(final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
+  public ByteBuffer getByteBuffer(final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
 
@@ -70,6 +76,11 @@ public abstract class MutableColumn<T extends Comparable<?>> implements Cloneabl
 
   @Override
   public void replaceBoolean(final boolean value, final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
+  public void replaceByteBuffer(@Nonnull final ByteBuffer value, final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
 

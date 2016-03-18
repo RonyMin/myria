@@ -1,5 +1,7 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
+
 import javax.annotation.Nonnull;
 
 import org.joda.time.DateTime;
@@ -81,4 +83,10 @@ public interface ReadableColumn extends ColumnInterface {
    */
   @Nonnull
   String getString(final int row);
+
+  /**
+   * @param row
+   * @return
+   */
+  ByteBuffer getByteBuffer(int row);
 }

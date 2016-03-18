@@ -1,8 +1,8 @@
 package edu.washington.escience.myria;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
-import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.DateTime;
 
 import edu.washington.escience.myria.column.Column;
@@ -202,20 +202,25 @@ public enum Type implements Serializable {
    * */
   BYTES_TYPE() {
     @Override
-    public boolean filter(final SimplePredicate.Op op, final Column<?> BytesColumn, final int tupleIndex,
+    public boolean filter(final SimplePredicate.Op op, final Column<?> bytesColumn, final int tupleIndex,
         final Object operand) {
-      final Bytes v = bytesColumn.getBlob(tupleIndex);
-      return compare(op, v, (Bytes) operand);
+      final ByteBuffer v = bytesColumn.getBlob(tupleIndex);
+      return compare(op, v, (ByteBuffer) operand);
+
     }
 
     @Override
     public String toString(final Column<?> column, final int tupleIndex) {
-      return "" + column.getBytes(tupleIndex);
+
+      return "" + column.getByteBuffer(tupleIndex);
+
     }
 
     @Override
     public Class<?> toJavaType() {
-      return Bytes.class;
+
+      return ByteBuffer.class;
+
     }
 
     @Override
@@ -225,7 +230,7 @@ public enum Type implements Serializable {
 
     @Override
     public String getName() {
-      return "Bytes";
+      return "BLOB";
     }
   },
   /**
@@ -356,6 +361,10 @@ public enum Type implements Serializable {
     return x.compareTo(y);
   }
 
+  public static final int compareRaw(final ByteBuffer x, final ByteBuffer y) {
+    return x.compareTo(y);
+  }
+
   /**
    * @return the value 0 if <code>x</code> is numerically equal to <code>y</code>; a value less than 0 if <code>x</code>
    *         is numerically less than <code>y</code>; and a value greater than 0 otherwise.
@@ -440,14 +449,9 @@ public enum Type implements Serializable {
     return evalOp(op, compared);
   }
 
-  /**
-   * @param op the operation
-   * @param valueInTuple the value to be compared in a tuple
-   * @param operand the operand
-   * @return true if valueInTuple op operand.
-   */
-  private static boolean compare(final SimplePredicate.Op op, final byte[] valueInTuple, final byte[] operand) {
-    return false;
+  private static boolean compare(final SimplePredicate.Op op, final ByteBuffer valueInTuple, final ByteBuffer operand) {
+    int compared = compareRaw(valueInTuple, operand);
+    return evalOp(op, compared);
   }
 
   /**
@@ -456,6 +460,7 @@ public enum Type implements Serializable {
    * @param operand the operand
    * @return true if valueInTuple op operand.
    */
+
   private static boolean compare(final SimplePredicate.Op op, final int valueInTuple, final int operand) {
     int compared = compareRaw(valueInTuple, operand);
     return evalOp(op, compared);
