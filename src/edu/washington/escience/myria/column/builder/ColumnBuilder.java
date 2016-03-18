@@ -35,6 +35,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>> implements Readable
   }
 
   @Override
+  public ColumnBuilder<T> appendByteBuffer(final ByteBuffer value) throws BufferOverflowException {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
   public boolean getBoolean(final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }

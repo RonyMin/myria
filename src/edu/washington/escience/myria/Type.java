@@ -204,7 +204,7 @@ public enum Type implements Serializable {
     @Override
     public boolean filter(final SimplePredicate.Op op, final Column<?> bytesColumn, final int tupleIndex,
         final Object operand) {
-      final ByteBuffer v = bytesColumn.getBlob(tupleIndex);
+      final ByteBuffer v = bytesColumn.getByteBuffer(tupleIndex);
       return compare(op, v, (ByteBuffer) operand);
 
     }
@@ -230,7 +230,7 @@ public enum Type implements Serializable {
 
     @Override
     public String getName() {
-      return "BLOB";
+      return "Bytebuffer";
     }
   },
   /**

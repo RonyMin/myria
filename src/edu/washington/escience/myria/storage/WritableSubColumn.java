@@ -1,6 +1,7 @@
 package edu.washington.escience.myria.storage;
 
 import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import org.joda.time.DateTime;
@@ -77,6 +78,12 @@ public final class WritableSubColumn implements WritableColumn {
   @Override
   public WritableColumn appendString(final String value) throws BufferOverflowException {
     inner.putString(column, value);
+    return this;
+  }
+
+  @Override
+  public WritableColumn appendByteBuffer(final ByteBuffer value) throws BufferOverflowException {
+    inner.putByteBuffer(column, value);
     return this;
   }
 

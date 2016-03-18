@@ -7,6 +7,8 @@ import java.nio.ByteBuffer;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Preconditions;
+
 import edu.washington.escience.myria.Type;
 
 /**
@@ -17,46 +19,40 @@ public class BytesColumn extends Column<ByteBuffer> {
    * @param bs
    * @param i
    */
-  public BytesColumn(final byte[] bs, final int i) {
-    // TODO Auto-generated constructor stub
+  /** Required for Java serialization. */
+  private static final long serialVersionUID = 1;
+  /** Internal representation of the column data. */
+  private final ByteBuffer[] data;
+  /** The number of existing rows in this column. */
+  private final int position;
+
+  public BytesColumn(final ByteBuffer[] data, final int numData) {
+    this.data = data;
+    position = numData;
   }
 
   @Override
-  public ByteBuffer getBlob(final int index) {
-    return null;
+  public ByteBuffer getByteBuffer(final int row) {
+    Preconditions.checkElementIndex(row, position);
+    return data[row];
+
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.washington.escience.myria.column.Column#getObject(int)
-   */
   @Override
   public @Nonnull ByteBuffer getObject(final int row) {
-    // TODO Auto-generated method stub
+
     return ByteBuffer.allocate(1);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.washington.escience.myria.column.Column#getType()
-   */
   @Override
   public Type getType() {
-    // TODO Auto-generated method stub
-    return null;
+
+    return Type.BYTES_TYPE;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.washington.escience.myria.column.Column#size()
-   */
   @Override
   public int size() {
-    // TODO Auto-generated method stub
-    return 0;
+    return position;
   }
 
 }

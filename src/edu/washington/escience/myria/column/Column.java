@@ -129,7 +129,7 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
       case LONG_TYPE:
         return new LongColumn(new long[] {}, 0);
       case BYTES_TYPE:
-        return new BytesColumn(new byte[] {}, 0);
+        return new BytesColumn(new ByteBuffer[] {}, 0);
       case STRING_TYPE:
         return new StringArrayColumn(new String[] {}, 0);
     }
@@ -319,10 +319,6 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
     }
     inner.setData(ByteString.copyFromUtf8(sb.toString()));
     return ColumnMessage.newBuilder().setType(ColumnMessage.Type.STRING).setStringColumn(inner).build();
-  }
-
-  public ByteBuffer getBlob(final int tupleIndex) {
-    throw new UnsupportedOperationException(getClass().getName());
   }
 
 }

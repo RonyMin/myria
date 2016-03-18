@@ -1,5 +1,6 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -203,6 +204,20 @@ public class MutableTupleBuffer implements ReadableTable, AppendableTable, Clone
     return ((DateTimeColumnBuilder) (currentBuildingColumns[column])).getDateTime(tupleIndex);
   }
 
+  @Override
+  public final ByteBuffer getByteBuffer(final int column, final int row) {
+    int tupleBatchIndex = row / TupleBatch.BATCH_SIZE;
+    int tupleIndex = row % TupleBatch.BATCH_SIZE;
+    if (tupleBatchIndex > readyTuples.size() || tupleBatchIndex == readyTuples.size()
+        && tupleIndex >= currentInProgressTuples) {
+      throw new IndexOutOfBoundsException();
+    }
+    if (tupleBatchIndex < readyTuples.size()) {
+      return readyTuples.get(tupleBatchIndex)[column].getByteBuffer(tupleIndex);
+    }
+    return currentBuildingColumns[column].getByteBuffer(tupleIndex);
+  }
+
   /**
    * @param row the row number
    * @return the index of the row in the containing TB.
@@ -244,6 +259,13 @@ public class MutableTupleBuffer implements ReadableTable, AppendableTable, Clone
   public final void putDateTime(final int column, final DateTime value) {
     checkPutIndex(column);
     currentBuildingColumns[column].appendDateTime(value);
+    columnPut(column);
+  }
+
+  @Override
+  public final void putByteBuffer(final int column, final ByteBuffer value) {
+    checkPutIndex(column);
+    currentBuildingColumns[column].appendByteBuffer(value);
     columnPut(column);
   }
 
@@ -406,6 +428,12 @@ public class MutableTupleBuffer implements ReadableTable, AppendableTable, Clone
         sourceColumn.replaceDateTime(date2, sourceBatchRow);
         destColumn.replaceDateTime(date1, destBatchRow);
         break;
+      case BYTES_TYPE:
+        ByteBuffer bb1 = sourceColumn.getByteBuffer(sourceBatchRow);
+        ByteBuffer bb2 = destColumn.getByteBuffer(destBatchRow);
+        sourceColumn.replaceByteBuffer(bb2, sourceBatchRow);
+        destColumn.replaceByteBuffer(bb1, destBatchRow);
+        break;
     }
   }
 
@@ -454,6 +482,10 @@ public class MutableTupleBuffer implements ReadableTable, AppendableTable, Clone
       case STRING_TYPE:
         dest.replaceString(sourceColumn.getString(sourceRow), tupleIndex);
         break;
+      case BYTES_TYPE:
+        dest.replaceByteBuffer(sourceColumn.getByteBuffer(sourceRow), tupleIndex);
+        break;
+
     }
   }
 

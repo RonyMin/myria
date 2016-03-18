@@ -29,6 +29,9 @@ public final class TupleUtils {
       case DATETIME_TYPE:
         to.appendDateTime(from.getDateTime(fromRow));
         break;
+      case BYTES_TYPE:
+        to.appendByteBuffer(from.getByteBuffer(fromRow));
+        break;
       case DOUBLE_TYPE:
         to.appendDouble(from.getDouble(fromRow));
         break;
@@ -64,6 +67,9 @@ public final class TupleUtils {
         break;
       case DATETIME_TYPE:
         to.putDateTime(toColumn, from.getDateTime(fromRow));
+        break;
+      case BYTES_TYPE:
+        to.putByteBuffer(toColumn, from.getByteBuffer(fromRow));
         break;
       case DOUBLE_TYPE:
         to.putDouble(toColumn, from.getDouble(fromRow));
@@ -102,6 +108,9 @@ public final class TupleUtils {
       case DATETIME_TYPE:
         to.appendDateTime(from.getDateTime(fromColumn, fromRow));
         break;
+      case BYTES_TYPE:
+        to.appendByteBuffer(from.getByteBuffer(fromColumn, fromRow));
+        break;
       case DOUBLE_TYPE:
         to.appendDouble(from.getDouble(fromColumn, fromRow));
         break;
@@ -138,6 +147,9 @@ public final class TupleUtils {
         break;
       case DATETIME_TYPE:
         to.putDateTime(toColumn, from.getDateTime(fromColumn, fromRow));
+        break;
+      case BYTES_TYPE:
+        to.putByteBuffer(toColumn, from.getByteBuffer(fromColumn, fromRow));
         break;
       case DOUBLE_TYPE:
         to.putDouble(toColumn, from.getDouble(fromColumn, fromRow));
@@ -185,6 +197,8 @@ public final class TupleUtils {
         return Type.compareRaw(table1.getString(column1, row1), table2.getString(column2, row2));
       case DATETIME_TYPE:
         return Type.compareRaw(table1.getDateTime(column1, row1), table2.getDateTime(column2, row2));
+      case BYTES_TYPE:
+        return Type.compareRaw(table1.getByteBuffer(column1, row1), table2.getByteBuffer(column2, row2));
     }
 
     throw new IllegalStateException("Invalid type.");
@@ -289,6 +303,10 @@ public final class TupleUtils {
           if (!table1.getDateTime(compareColumns1[i], row1).equals(table2.getDateTime(compareColumns2[i], row2))) {
             return false;
           }
+        case BYTES_TYPE:
+          if (!table1.getByteBuffer(compareColumns1[i], row1).equals(table2.getByteBuffer(compareColumns2[i], row2))) {
+            return false;
+          }
           break;
       }
     }
@@ -343,6 +361,11 @@ public final class TupleUtils {
           break;
         case DATETIME_TYPE:
           if (!table1.getDateTime(i, row1).equals(table2.getDateTime(i, row2))) {
+            return false;
+          }
+          break;
+        case BYTES_TYPE:
+          if (!table1.getByteBuffer(i, row1).equals(table2.getByteBuffer(i, row2))) {
             return false;
           }
           break;
@@ -401,6 +424,11 @@ public final class TupleUtils {
           break;
         case DATETIME_TYPE:
           if (!table1.getDateTime(compareColumns[i], row1).equals(table2.getDateTime(i, index))) {
+            return false;
+          }
+          break;
+        case BYTES_TYPE:
+          if (!table1.getByteBuffer(compareColumns[i], row1).equals(table2.getByteBuffer(i, index))) {
             return false;
           }
           break;

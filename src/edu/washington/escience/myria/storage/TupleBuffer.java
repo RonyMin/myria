@@ -1,5 +1,6 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -137,6 +138,17 @@ public class TupleBuffer implements ReadableTable, AppendableTable {
   }
 
   @Override
+  public final ByteBuffer getByteBuffer(final int column, final int row) {
+    Preconditions.checkElementIndex(row, numTuples());
+    int batchIndex = row / TupleBatch.BATCH_SIZE;
+    int localRow = row % TupleBatch.BATCH_SIZE;
+    if (batchIndex < readyBatches.size()) {
+      return readyBatches.get(batchIndex).getByteBuffer(column, localRow);
+    }
+    return currentBatch.get(column).getByteBuffer(localRow);
+  }
+
+  @Override
   public final double getDouble(final int column, final int row) {
     Preconditions.checkElementIndex(row, numTuples());
     int batchIndex = row / TupleBatch.BATCH_SIZE;
@@ -207,6 +219,13 @@ public class TupleBuffer implements ReadableTable, AppendableTable {
   public final void putDateTime(final int column, final DateTime value) {
     checkPutIndex(column);
     currentBatch.get(column).appendDateTime(value);
+    columnPut(column);
+  }
+
+  @Override
+  public final void putByteBuffer(final int column, final ByteBuffer value) {
+    checkPutIndex(column);
+    currentBatch.get(column).appendByteBuffer(value);
     columnPut(column);
   }
 

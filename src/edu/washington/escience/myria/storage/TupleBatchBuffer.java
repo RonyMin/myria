@@ -1,5 +1,6 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
@@ -391,6 +392,13 @@ public class TupleBatchBuffer implements AppendableTable {
   public final void putDateTime(final int column, final DateTime value) {
     checkPutIndex(column);
     currentBuildingColumns.get(column).appendDateTime(value);
+    columnPut(column);
+  }
+
+  @Override
+  public final void putByteBuffer(final int column, final ByteBuffer value) {
+    checkPutIndex(column);
+    currentBuildingColumns.get(column).appendByteBuffer(value);
     columnPut(column);
   }
 
