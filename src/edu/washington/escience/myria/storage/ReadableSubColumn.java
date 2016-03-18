@@ -1,5 +1,6 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import org.joda.time.DateTime;
@@ -41,6 +42,11 @@ public final class ReadableSubColumn implements ReadableColumn {
   @Override
   public boolean getBoolean(final int row) {
     return inner.getBoolean(column, row);
+  }
+
+  @Override
+  public ByteBuffer getByteBuffer(final int row) {
+    return null; // inner.getByteBuffer(column, row);
   }
 
   @Override

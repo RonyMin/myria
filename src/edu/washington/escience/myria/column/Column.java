@@ -66,6 +66,11 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
   public abstract T getObject(int row);
 
   @Override
+  public ByteBuffer getByteBuffer(final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
   public String getString(final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
@@ -123,6 +128,8 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
         return new IntArrayColumn(new int[] {}, 0);
       case LONG_TYPE:
         return new LongColumn(new long[] {}, 0);
+      case BYTES_TYPE:
+        return new BytesColumn(new byte[] {}, 0);
       case STRING_TYPE:
         return new StringArrayColumn(new String[] {}, 0);
     }
@@ -162,6 +169,18 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
    * @return a ColumnMessage with a DateColumn member.
    */
   protected static ColumnMessage defaultDateTimeProto(final Column<?> column) {
+    ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
+    for (int i = 0; i < column.size(); i++) {
+      dataBytes.putLong(column.getDateTime(i).getMillis());
+    }
+    dataBytes.flip();
+    final DateTimeColumnMessage.Builder inner =
+        DateTimeColumnMessage.newBuilder().setData(ByteString.copyFrom(dataBytes));
+    return ColumnMessage.newBuilder().setType(ColumnMessage.Type.DATETIME).setDateColumn(inner).build();
+  }
+
+  protected static ColumnMessage defaultBytesProto(final Column<?> column) {
+    // TODO, just a copy of above
     ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
     for (int i = 0; i < column.size(); i++) {
       dataBytes.putLong(column.getDateTime(i).getMillis());
@@ -258,6 +277,8 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
         return defaultLongProto(column);
       case STRING_TYPE:
         return defaultStringProto(column);
+      case BYTES_TYPE:
+        return defaultBytesProto(column);
     }
     throw new UnsupportedOperationException("Serializing a column of type " + column.getType());
   }
@@ -297,4 +318,13 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
     inner.setData(ByteString.copyFromUtf8(sb.toString()));
     return ColumnMessage.newBuilder().setType(ColumnMessage.Type.STRING).setStringColumn(inner).build();
   }
+
+  /**
+   * @param tupleIndex
+   * @return
+   */
+  public ByteBuffer getBlob(final int tupleIndex) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
 }

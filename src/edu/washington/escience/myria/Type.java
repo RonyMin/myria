@@ -1,6 +1,7 @@
 package edu.washington.escience.myria;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 import org.joda.time.DateTime;
 
@@ -197,6 +198,37 @@ public enum Type implements Serializable {
   },
 
   /**
+   * byteArray type.
+   * */
+  BYTES_TYPE() {
+    @Override
+    public boolean filter(final SimplePredicate.Op op, final Column<?> bytesColumn, final int tupleIndex,
+        final Object operand) {
+      final ByteBuffer v = bytesColumn.getBlob(tupleIndex);
+      return compare(op, v, (ByteBuffer) operand);
+    }
+
+    @Override
+    public String toString(final Column<?> column, final int tupleIndex) {
+      return "" + column.getByteBuffer(tupleIndex);
+    }
+
+    @Override
+    public Class<?> toJavaType() {
+      return ByteBuffer.class;
+    }
+
+    @Override
+    public Class<?> toJavaObjectType() {
+      return toJavaType();
+    }
+
+    @Override
+    public String getName() {
+      return "BLOB";
+    }
+  },
+  /**
    * Long type.
    * */
   LONG_TYPE() {
@@ -324,6 +356,10 @@ public enum Type implements Serializable {
     return x.compareTo(y);
   }
 
+  public static final int compareRaw(final ByteBuffer x, final ByteBuffer y) {
+    return x.compareTo(y);
+  }
+
   /**
    * @return the value 0 if <code>x</code> is numerically equal to <code>y</code>; a value less than 0 if <code>x</code>
    *         is numerically less than <code>y</code>; and a value greater than 0 otherwise.
@@ -406,6 +442,21 @@ public enum Type implements Serializable {
   private static boolean compare(final SimplePredicate.Op op, final DateTime valueInTuple, final DateTime operand) {
     int compared = compareRaw(valueInTuple, operand);
     return evalOp(op, compared);
+  }
+
+  private static boolean compare(final SimplePredicate.Op op, final ByteBuffer valueInTuple, final ByteBuffer operand) {
+    int compared = compareRaw(valueInTuple, operand);
+    return evalOp(op, compared);
+  }
+
+  /**
+   * @param op the operation
+   * @param valueInTuple the value to be compared in a tuple
+   * @param operand the operand
+   * @return true if valueInTuple op operand.
+   */
+  private static boolean compare(final SimplePredicate.Op op, final byte[] valueInTuple, final byte[] operand) {
+    return false;
   }
 
   /**
