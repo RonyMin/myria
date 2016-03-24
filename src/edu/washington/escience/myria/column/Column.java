@@ -170,7 +170,7 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
    * @return a ColumnMessage with a DateColumn member.
    */
   protected static ColumnMessage defaultDateTimeProto(final Column<?> column) {
-    ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
+    ByteBuffer dataBytes = ByteBuffer.allocate(column.size());
     for (int i = 0; i < column.size(); i++) {
       dataBytes.putLong(column.getDateTime(i).getMillis());
     }
