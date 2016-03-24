@@ -10,6 +10,7 @@ import com.google.protobuf.ByteString;
 
 import edu.washington.escience.myria.Type;
 import edu.washington.escience.myria.proto.DataProto.BooleanColumnMessage;
+import edu.washington.escience.myria.proto.DataProto.BytesColumnMessage;
 import edu.washington.escience.myria.proto.DataProto.ColumnMessage;
 import edu.washington.escience.myria.proto.DataProto.DateTimeColumnMessage;
 import edu.washington.escience.myria.proto.DataProto.DoubleColumnMessage;
@@ -180,15 +181,14 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
   }
 
   protected static ColumnMessage defaultBytesProto(final Column<?> column) {
-    // TODO, just a copy of above
+
     ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
     for (int i = 0; i < column.size(); i++) {
-      dataBytes.putLong(column.getDateTime(i).getMillis());
+      dataBytes.put(column.getByteBuffer(i)); // putByteBuffer(column.getByteBuffer(i));
     }
     dataBytes.flip();
-    final DateTimeColumnMessage.Builder inner =
-        DateTimeColumnMessage.newBuilder().setData(ByteString.copyFrom(dataBytes));
-    return ColumnMessage.newBuilder().setType(ColumnMessage.Type.DATETIME).setDateColumn(inner).build();
+    final BytesColumnMessage.Builder inner = BytesColumnMessage.newBuilder().setData(ByteString.copyFrom(dataBytes));
+    return ColumnMessage.newBuilder().setType(ColumnMessage.Type.BYTES).setBytesColumn(inner).build();
   }
 
   /**

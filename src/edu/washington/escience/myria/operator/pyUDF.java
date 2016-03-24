@@ -5,6 +5,7 @@ package edu.washington.escience.myria.operator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -74,12 +75,15 @@ public class pyUDF extends UnaryOperator {
     List<? extends Column<?>> inputColumns = tb.getDataColumns();
 
     for (int i = 0; i < rows; i++) {
-      // get all columns pass them to python function
 
-      int v1 = inputColumns.get(0).getInt(i);
-      int v2 = inputColumns.get(1).getInt(i);
+      if (inputColumns.get(i).getType() == Type.BYTES_TYPE) {
+        ByteBuffer input = inputColumns.get(1).getByteBuffer(i);
+        output.putInt(0, evalPython(input));
 
-      output.putInt(0, evalPython(v1, v2));
+      } else {
+        // TODO: log an error or state that this is not going to work!!
+        output.putInt(0, -1);// type not supported
+      }
 
     }
 
@@ -87,9 +91,9 @@ public class pyUDF extends UnaryOperator {
 
   }
 
-  private int evalPython(final long v1, final long v2) {
+  private int evalPython(final ByteBuffer input) {
 
-    ProcessBuilder pb = new ProcessBuilder("python", filename, "" + v1, "" + v2);
+    ProcessBuilder pb = new ProcessBuilder("python", filename, "" + input);
     try {
       Process p = pb.start();
       BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));

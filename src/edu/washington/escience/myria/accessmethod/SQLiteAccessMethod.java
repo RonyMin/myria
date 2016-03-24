@@ -157,6 +157,8 @@ public final class SQLiteAccessMethod extends AccessMethod {
                   case STRING_TYPE:
                     statement.bind(col + 1, tupleBatch.getString(col, row));
                     break;
+                  case BYTES_TYPE:
+                    statement.bind(col + 1, tupleBatch.getByteBuffer(col, row).array());
                 }
               }
               statement.step();
@@ -368,6 +370,8 @@ public final class SQLiteAccessMethod extends AccessMethod {
         return "INTEGER";
       case STRING_TYPE:
         return "TEXT";
+      case BYTES_TYPE:
+        return "BLOB";
       default:
         throw new UnsupportedOperationException("Type " + type + " is not supported");
     }

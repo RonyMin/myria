@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -150,6 +151,15 @@ public class PostgresBinaryTupleWriter implements TupleWriter {
             final byte[] utf8Bytes = string.getBytes("UTF-8");
             buffer.writeInt(utf8Bytes.length);
             buffer.write(utf8Bytes);
+            break;
+          case BYTES_TYPE:
+            // https://github.com/postgres/postgres/blob/master/src/backend/utils/adt/int8.c
+
+            ByteBuffer blob = tuples.getByteBuffer(j, i);
+            // do I have to encode the bytebuffer here?
+            final byte[] bb = blob.array();
+            buffer.writeInt(bb.length);
+            buffer.write(bb);
             break;
         }
       }

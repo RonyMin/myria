@@ -27,6 +27,7 @@ public class FileSource implements DataSource, Serializable {
   @JsonCreator
   public FileSource(@JsonProperty(value = "filename", required = true) final String filename) {
     this.filename = Objects.requireNonNull(filename, "Parameter filename to FileSource may not be null");
+
   }
 
   @Override

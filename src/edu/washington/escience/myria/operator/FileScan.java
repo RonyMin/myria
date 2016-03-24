@@ -3,6 +3,10 @@ package edu.washington.escience.myria.operator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import javax.annotation.Nullable;
@@ -74,6 +78,7 @@ public final class FileScan extends LeafOperator {
    */
   public FileScan(final String filename, final Schema schema) {
     this(filename, schema, null, null, null, null);
+
   }
 
   /**
@@ -129,6 +134,7 @@ public final class FileScan extends LeafOperator {
   public FileScan(final String filename, final Schema schema, @Nullable final Character delimiter,
       @Nullable final Character quote, @Nullable final Character escape, @Nullable final Integer numberOfSkippedLines) {
     this(new FileSource(filename), schema, delimiter, quote, escape, numberOfSkippedLines);
+
   }
 
   /**
@@ -168,6 +174,8 @@ public final class FileScan extends LeafOperator {
     /* Let's assume that the scanner always starts at the beginning of a line. */
     long lineNumberBegin = lineNumber;
 
+    LOGGER.info("linenumber: " + lineNumber);
+    LOGGER.info("delimiter: " + delimiter);
     while ((buffer.numTuples() < TupleBatch.BATCH_SIZE)) {
       lineNumber++;
       if (parser.isClosed()) {
@@ -182,6 +190,8 @@ public final class FileScan extends LeafOperator {
         throw new DbException("Error parsing row " + lineNumber, e);
       }
       CSVRecord record = iterator.next();
+      // ///
+      LOGGER.info("record: " + record.toString());
 
       if (record.size() != schema.numColumns()) {
         throw new DbException("Error parsing row " + lineNumber + ": Found " + record.size()
@@ -189,6 +199,9 @@ public final class FileScan extends LeafOperator {
       }
       for (int column = 0; column < schema.numColumns(); ++column) {
         String cell = record.get(column);
+        // ///
+        LOGGER.info("cell name for this parse: " + cell);
+
         try {
           switch (schema.getColumnType(column)) {
             case BOOLEAN_TYPE:
@@ -212,6 +225,9 @@ public final class FileScan extends LeafOperator {
               break;
             case STRING_TYPE:
               buffer.putString(column, cell);
+              break;
+            case BYTES_TYPE:
+              buffer.putByteBuffer(column, getFile(cell));// read filename
               break;
             case DATETIME_TYPE:
               buffer.putDateTime(column, DateTimeUtils.parse(cell));
@@ -250,5 +266,23 @@ public final class FileScan extends LeafOperator {
     }
 
     lineNumber = 0;
+  }
+
+  protected ByteBuffer getFile(final String filename) throws DbException {
+    Preconditions.checkNotNull(filename, "byte[] filename was null");
+
+    LOGGER.info("filename " + filename);
+    Path path = Paths.get(filename);
+    LOGGER.info("path " + path.toString());
+
+    byte[] data = null;
+    try {
+      data = Files.readAllBytes(path);
+    } catch (IOException e) {
+      throw new DbException(e);
+    }
+
+    return ByteBuffer.wrap(data);
+
   }
 }
