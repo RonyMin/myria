@@ -174,8 +174,8 @@ public final class FileScan extends LeafOperator {
     /* Let's assume that the scanner always starts at the beginning of a line. */
     long lineNumberBegin = lineNumber;
 
-    LOGGER.info("linenumber: " + lineNumber);
-    LOGGER.info("delimiter: " + delimiter);
+    // LOGGER.info("linenumber: " + lineNumber);
+    // LOGGER.info("delimiter: " + delimiter);
     while ((buffer.numTuples() < TupleBatch.BATCH_SIZE)) {
       lineNumber++;
       if (parser.isClosed()) {
@@ -200,7 +200,7 @@ public final class FileScan extends LeafOperator {
       for (int column = 0; column < schema.numColumns(); ++column) {
         String cell = record.get(column);
         // ///
-        LOGGER.info("cell name for this parse: " + cell);
+        // LOGGER.info("cell name for this parse: " + cell);
 
         try {
           switch (schema.getColumnType(column)) {
@@ -271,9 +271,9 @@ public final class FileScan extends LeafOperator {
   protected ByteBuffer getFile(final String filename) throws DbException {
     Preconditions.checkNotNull(filename, "byte[] filename was null");
 
-    LOGGER.info("filename " + filename);
+    // LOGGER.info("filename " + filename);
     Path path = Paths.get(filename);
-    LOGGER.info("path " + path.toString());
+    // LOGGER.info("path " + path.toString());
 
     byte[] data = null;
     try {
@@ -281,7 +281,7 @@ public final class FileScan extends LeafOperator {
     } catch (IOException e) {
       throw new DbException(e);
     }
-
+    LOGGER.info("size of bytebuffer written: " + data.length);
     return ByteBuffer.wrap(data);
 
   }

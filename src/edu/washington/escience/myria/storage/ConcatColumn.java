@@ -1,5 +1,6 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -86,6 +87,12 @@ public class ConcatColumn<T extends Comparable<?>> extends Column<T> {
   public boolean getBoolean(final int row) {
     Map.Entry<Integer, Column<?>> entry = getColumnEntry(row);
     return entry.getValue().getBoolean(row - entry.getKey());
+  }
+
+  @Override
+  public ByteBuffer getByteBuffer(final int row) {
+    Map.Entry<Integer, Column<?>> entry = getColumnEntry(row);
+    return entry.getValue().getByteBuffer(row - entry.getKey());
   }
 
   @Override

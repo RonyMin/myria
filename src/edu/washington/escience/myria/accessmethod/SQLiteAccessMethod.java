@@ -2,6 +2,7 @@ package edu.washington.escience.myria.accessmethod;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -158,7 +159,10 @@ public final class SQLiteAccessMethod extends AccessMethod {
                     statement.bind(col + 1, tupleBatch.getString(col, row));
                     break;
                   case BYTES_TYPE:
-                    statement.bind(col + 1, tupleBatch.getByteBuffer(col, row).array());
+                    ByteBuffer bb = tupleBatch.getByteBuffer(col, row);
+                    byte[] data = new byte[bb.remaining()];
+                    bb.get(data);
+                    statement.bind(col + 1, data);// .array());
                 }
               }
               statement.step();

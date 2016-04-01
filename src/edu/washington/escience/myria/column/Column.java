@@ -170,7 +170,7 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
    * @return a ColumnMessage with a DateColumn member.
    */
   protected static ColumnMessage defaultDateTimeProto(final Column<?> column) {
-    ByteBuffer dataBytes = ByteBuffer.allocate(column.size());
+    ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
     for (int i = 0; i < column.size(); i++) {
       dataBytes.putLong(column.getDateTime(i).getMillis());
     }
@@ -181,14 +181,32 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
   }
 
   protected static ColumnMessage defaultBytesProto(final Column<?> column) {
-
-    ByteBuffer dataBytes = ByteBuffer.allocate(column.size() * Long.SIZE / Byte.SIZE);
+    final BytesColumnMessage.Builder inner = BytesColumnMessage.newBuilder();
+    int bblen = 0;
+    int startP = 0, endP = 0;
     for (int i = 0; i < column.size(); i++) {
-      dataBytes.put(column.getByteBuffer(i)); // putByteBuffer(column.getByteBuffer(i));
+      bblen = bblen + column.getByteBuffer(i).array().length;// should i use capacity instead here?
     }
-    dataBytes.flip();
-    final BytesColumnMessage.Builder inner = BytesColumnMessage.newBuilder().setData(ByteString.copyFrom(dataBytes));
+    ByteBuffer bb = ByteBuffer.allocate(bblen);
+    int offset = bb.position();
+
+    for (int i = 0; i < column.size(); i++) {
+      int len = column.getByteBuffer(i).array().length;
+      endP = startP + len;
+      inner.addStartIndices(startP);
+      inner.addEndIndices(endP);
+
+      bb.put(column.getByteBuffer(i).array(), offset, len);
+      startP = endP;
+
+      offset = bb.position(); // offset + len;
+      len = 0;
+    }
+    bb.flip();
+    inner.setData(ByteString.copyFrom(bb));
+
     return ColumnMessage.newBuilder().setType(ColumnMessage.Type.BYTES).setBytesColumn(inner).build();
+
   }
 
   /**

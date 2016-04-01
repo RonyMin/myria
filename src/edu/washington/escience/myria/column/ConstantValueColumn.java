@@ -23,9 +23,7 @@ public class ConstantValueColumn extends Column<Comparable<?>> {
   /** If this is a DateTime column, the DateTime value of the column. */
   private DateTime dateTimeValue;
   /** If this is a byte column, the primitive byte value of the column. */
-
   private ByteBuffer byteValue;
-
   /** If this is a Double column, the primitive double value of the column. */
   private double doubleValue;
   /** If this is a Float column, the primitive float value of the column. */

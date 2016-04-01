@@ -6494,6 +6494,32 @@ public final class DataProto {
      * <code>required bytes data = 1;</code>
      */
     com.google.protobuf.ByteString getData();
+
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    java.util.List<java.lang.Integer> getStartIndicesList();
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    int getStartIndicesCount();
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    int getStartIndices(int index);
+
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    java.util.List<java.lang.Integer> getEndIndicesList();
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    int getEndIndicesCount();
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    int getEndIndices(int index);
   }
   /**
    * Protobuf type {@code BytesColumnMessage}
@@ -6552,6 +6578,48 @@ public final class DataProto {
               data_ = input.readBytes();
               break;
             }
+            case 16: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                startIndices_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              startIndices_.add(input.readInt32());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
+                startIndices_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                startIndices_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                endIndices_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              endIndices_.add(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                endIndices_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                endIndices_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -6560,6 +6628,12 @@ public final class DataProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          startIndices_ = java.util.Collections.unmodifiableList(startIndices_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          endIndices_ = java.util.Collections.unmodifiableList(endIndices_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -6607,8 +6681,54 @@ public final class DataProto {
       return data_;
     }
 
+    public static final int START_INDICES_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.Integer> startIndices_;
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getStartIndicesList() {
+      return startIndices_;
+    }
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    public int getStartIndicesCount() {
+      return startIndices_.size();
+    }
+    /**
+     * <code>repeated int32 start_indices = 2;</code>
+     */
+    public int getStartIndices(int index) {
+      return startIndices_.get(index);
+    }
+
+    public static final int END_INDICES_FIELD_NUMBER = 3;
+    private java.util.List<java.lang.Integer> endIndices_;
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getEndIndicesList() {
+      return endIndices_;
+    }
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    public int getEndIndicesCount() {
+      return endIndices_.size();
+    }
+    /**
+     * <code>repeated int32 end_indices = 3;</code>
+     */
+    public int getEndIndices(int index) {
+      return endIndices_.get(index);
+    }
+
     private void initFields() {
       data_ = com.google.protobuf.ByteString.EMPTY;
+      startIndices_ = java.util.Collections.emptyList();
+      endIndices_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6630,6 +6750,12 @@ public final class DataProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, data_);
       }
+      for (int i = 0; i < startIndices_.size(); i++) {
+        output.writeInt32(2, startIndices_.get(i));
+      }
+      for (int i = 0; i < endIndices_.size(); i++) {
+        output.writeInt32(3, endIndices_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6642,6 +6768,24 @@ public final class DataProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, data_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < startIndices_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(startIndices_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getStartIndicesList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < endIndices_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(endIndices_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getEndIndicesList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6762,6 +6906,10 @@ public final class DataProto {
         super.clear();
         data_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        startIndices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        endIndices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -6794,6 +6942,16 @@ public final class DataProto {
           to_bitField0_ |= 0x00000001;
         }
         result.data_ = data_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          startIndices_ = java.util.Collections.unmodifiableList(startIndices_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.startIndices_ = startIndices_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          endIndices_ = java.util.Collections.unmodifiableList(endIndices_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.endIndices_ = endIndices_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6812,6 +6970,26 @@ public final class DataProto {
         if (other == edu.washington.escience.myria.proto.DataProto.BytesColumnMessage.getDefaultInstance()) return this;
         if (other.hasData()) {
           setData(other.getData());
+        }
+        if (!other.startIndices_.isEmpty()) {
+          if (startIndices_.isEmpty()) {
+            startIndices_ = other.startIndices_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureStartIndicesIsMutable();
+            startIndices_.addAll(other.startIndices_);
+          }
+          onChanged();
+        }
+        if (!other.endIndices_.isEmpty()) {
+          if (endIndices_.isEmpty()) {
+            endIndices_ = other.endIndices_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureEndIndicesIsMutable();
+            endIndices_.addAll(other.endIndices_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -6875,6 +7053,138 @@ public final class DataProto {
       public Builder clearData() {
         bitField0_ = (bitField0_ & ~0x00000001);
         data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> startIndices_ = java.util.Collections.emptyList();
+      private void ensureStartIndicesIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          startIndices_ = new java.util.ArrayList<java.lang.Integer>(startIndices_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getStartIndicesList() {
+        return java.util.Collections.unmodifiableList(startIndices_);
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public int getStartIndicesCount() {
+        return startIndices_.size();
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public int getStartIndices(int index) {
+        return startIndices_.get(index);
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public Builder setStartIndices(
+          int index, int value) {
+        ensureStartIndicesIsMutable();
+        startIndices_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public Builder addStartIndices(int value) {
+        ensureStartIndicesIsMutable();
+        startIndices_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public Builder addAllStartIndices(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureStartIndicesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, startIndices_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 start_indices = 2;</code>
+       */
+      public Builder clearStartIndices() {
+        startIndices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> endIndices_ = java.util.Collections.emptyList();
+      private void ensureEndIndicesIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          endIndices_ = new java.util.ArrayList<java.lang.Integer>(endIndices_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getEndIndicesList() {
+        return java.util.Collections.unmodifiableList(endIndices_);
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public int getEndIndicesCount() {
+        return endIndices_.size();
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public int getEndIndices(int index) {
+        return endIndices_.get(index);
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public Builder setEndIndices(
+          int index, int value) {
+        ensureEndIndicesIsMutable();
+        endIndices_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public Builder addEndIndices(int value) {
+        ensureEndIndicesIsMutable();
+        endIndices_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public Builder addAllEndIndices(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureEndIndicesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, endIndices_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 end_indices = 3;</code>
+       */
+      public Builder clearEndIndices() {
+        endIndices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
@@ -6973,9 +7283,10 @@ public final class DataProto {
       "sage\022\014\n\004data\030\001 \002(\014\022\025\n\rstart_indices\030\002 \003(" +
       "\005\022\023\n\013end_indices\030\003 \003(\005\"$\n\024BooleanColumnM" +
       "essage\022\014\n\004data\030\001 \002(\014\"%\n\025DateTimeColumnMe" +
-      "ssage\022\014\n\004data\030\001 \002(\014\"\"\n\022BytesColumnMessag" +
-      "e\022\014\n\004data\030\001 \002(\014B0\n#edu.washington.escien" +
-      "ce.myria.protoB\tDataProto"
+      "ssage\022\014\n\004data\030\001 \002(\014\"N\n\022BytesColumnMessag" +
+      "e\022\014\n\004data\030\001 \002(\014\022\025\n\rstart_indices\030\002 \003(\005\022\023" +
+      "\n\013end_indices\030\003 \003(\005B0\n#edu.washington.es" +
+      "cience.myria.protoB\tDataProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7048,7 +7359,7 @@ public final class DataProto {
     internal_static_BytesColumnMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_BytesColumnMessage_descriptor,
-        new java.lang.String[] { "Data", });
+        new java.lang.String[] { "Data", "StartIndices", "EndIndices", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

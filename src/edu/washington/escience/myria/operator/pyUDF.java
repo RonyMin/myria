@@ -3,9 +3,18 @@
  */
 package edu.washington.escience.myria.operator;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.ProcessBuilder.Redirect;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -26,7 +35,13 @@ public class pyUDF extends UnaryOperator {
   private static final long serialVersionUID = 1L;
 
   private String filename;
-  public static final Schema SCHEMA = Schema.ofFields(Type.INT_TYPE, "UDF");
+  // // this is temporarily the pickled object that is sent back
+  public static final Schema SCHEMA = Schema.ofFields(Type.BYTES_TYPE, "UDF");
+  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
+  private final String pythonExec = "python";
+  private ServerSocket serverSocket = null;
+  private Socket clientSoc = null;
+  private Process worker = null;
 
   /**
    * The buffer holding the results.
@@ -52,7 +67,7 @@ public class pyUDF extends UnaryOperator {
   }
 
   @Override
-  protected TupleBatch fetchNextReady() throws DbException {
+  protected TupleBatch fetchNextReady() throws DbException, UnknownHostException, IOException {
     // this function should get the the batch of the tuples
     // apply run the python script on this batch of tuples
     // since python UDF will be applied to each tuple at a time
@@ -69,20 +84,58 @@ public class pyUDF extends UnaryOperator {
     }
 
     int rows = tb.numTuples();
-    // final Schema s = new Schema(ImmutableList.of(Type.INT_TYPE), ImmutableList.of("sum"));
     final TupleBatchBuffer output = new TupleBatchBuffer(SCHEMA);
 
     List<? extends Column<?>> inputColumns = tb.getDataColumns();
 
     for (int i = 0; i < rows; i++) {
+      ByteBuffer input = null;
+      // look up the schema to figure out which column is BYTE_TYPE and read it in.
 
-      if (inputColumns.get(i).getType() == Type.BYTES_TYPE) {
-        ByteBuffer input = inputColumns.get(1).getByteBuffer(i);
-        output.putInt(0, evalPython(input));
+      for (int j = 0; j < tb.numColumns(); j++) {
+        if (inputColumns.get(j).getType() == Type.BYTES_TYPE) {
+          input = inputColumns.get(j).getByteBuffer(i);
+        }
+      }
+      LOGGER.info("trying to launch worker for row: " + i);
 
-      } else {
-        // TODO: log an error or state that this is not going to work!!
-        output.putInt(0, -1);// type not supported
+      if (input != null) {
+        // instead of launch a worker per tuple, and then kill it,
+        // run a process per worker and reuse it.
+        Startworker();
+        if (clientSoc != null) {
+
+          LOGGER.info("successfully launched worker");
+
+          DataOutputStream dOut = new DataOutputStream(clientSoc.getOutputStream());
+
+          dOut.writeInt(input.array().length);
+          dOut.write(input.array());
+          dOut.flush();
+
+          LOGGER.info("wrote to  output stream for the client socket");
+          // get results back!
+
+          DataInputStream dIn = new DataInputStream(clientSoc.getInputStream());
+
+          int length = 0;
+          length = dIn.readInt(); // read length of incoming message
+          byte[] b = new byte[length];
+          dIn.read(b);
+          output.putByteBuffer(0, ByteBuffer.wrap(b));
+
+          // close client socket
+          clientSoc.close();
+
+        } else {
+          byte[] b = "empty".getBytes();
+
+          output.putByteBuffer(0, ByteBuffer.wrap(b));
+          LOGGER.info("Failed launching worker");
+        }
+        if (serverSocket != null) {
+          serverSocket.close();
+        }
       }
 
     }
@@ -91,28 +144,36 @@ public class pyUDF extends UnaryOperator {
 
   }
 
-  private int evalPython(final ByteBuffer input) {
+  private void Startworker() throws UnknownHostException, IOException {
 
-    ProcessBuilder pb = new ProcessBuilder("python", filename, "" + input);
-    try {
-      Process p = pb.start();
-      BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      int ret = new Integer(in.readLine()).intValue();
-      return ret;
-    } catch (Exception e) {
-      System.out.println(e);
-    }
-    return 0;
+    serverSocket = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
+    int a = serverSocket.getLocalPort();
+    LOGGER.info("created socket " + a);
+
+    ProcessBuilder pb = new ProcessBuilder(pythonExec, filename);
+
+    pb.redirectError(Redirect.INHERIT);
+    pb.redirectOutput(Redirect.INHERIT);
+    worker = pb.start();
+
+    OutputStream stdin = worker.getOutputStream();
+    // LOGGER.info("got output stream from process");
+
+    OutputStreamWriter out = new OutputStreamWriter(stdin, StandardCharsets.UTF_8);
+
+    out.write(serverSocket.getLocalPort() + "\n");
+    out.flush();
+    clientSoc = serverSocket.accept();
+
+    return;
 
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
-    // for now just check that the filename is not empty
-    // init may be used to send the python code to all the
-    // executors
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException, IOException {
+
     Preconditions.checkNotNull(filename);
-    // use this to pickle? python function and send it along to the workers.
+    // get the worker socket to read and write.
 
   }
 

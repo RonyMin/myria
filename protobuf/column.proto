@@ -69,4 +69,6 @@ message DateTimeColumnMessage {
 }
 message BytesColumnMessage {
   required bytes data = 1;
+  repeated int32 start_indices = 2;
+  repeated int32 end_indices = 3;
 }
