@@ -153,13 +153,12 @@ public class PostgresBinaryTupleWriter implements TupleWriter {
             buffer.write(utf8Bytes);
             break;
           case BYTES_TYPE:
-            // https://github.com/postgres/postgres/blob/master/src/backend/utils/adt/int8.c
-
-            ByteBuffer blob = tuples.getByteBuffer(j, i);
-            // do I have to encode the bytebuffer here?
-            final byte[] bb = blob.array();
-            buffer.writeInt(bb.length);
-            buffer.write(bb);
+            ByteBuffer bb = tuples.getByteBuffer(j, i);
+            int length = bb.remaining();
+            byte[] data = new byte[length];
+            bb.get(data);
+            buffer.writeInt(length);
+            buffer.write(data);
             break;
         }
       }
