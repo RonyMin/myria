@@ -408,6 +408,8 @@ public final class JdbcAccessMethod extends AccessMethod {
         return "TEXT";
       case DATETIME_TYPE:
         return "TIMESTAMP";
+      case BYTES_TYPE:
+        return "BLOB";
       default:
         throw new UnsupportedOperationException("Type " + type + " is not supported by DBMS " + dbms);
     }

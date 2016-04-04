@@ -3,13 +3,13 @@
   "operators": [
     {
     "relationKey": {
-      "programName": "global_join",
-      "userName": "jwang",
-      "relationName": "intTable"
+      "programName": "blob_operator",
+      "userName": "public",
+      "relationName": "binarydata"
       },
 
     "opId": 0,
-    "opName": "MyriaScan(jwang:global_join:intTable)",
+    "opName": "MyriaScan(public:gblob_operator:binarydata)",
     "opType": "TableScan"
     },
     {
@@ -28,17 +28,17 @@
         "argOverwriteTable": true,
         "argChild": 1,
         "opType": "DbInsert",
-        "opName": "MyriaStore(jwang:global_join:intTable)",
+        "opName": "MyriaStore(public:blob_operator:binarydata)",
         "relationKey": {
-          "programName": "global_join",
-          "userName": "jwang",
-          "relationName": "K2"
+          "programName": "blob_operator",
+          "userName": "public",
+          "relationName": "binarydata_results"
         },
         "opId": 2
 		}]
 }],
 "language" : "datalog",
-"rawQuery" : "select c_name from customer table",
-"logicalRa": "Sink[Apply(c_name=c_name)[Scan(public:public:myriameasurements:lineorder)]]"
+"rawQuery" : "run python UDF",
+"logicalRa": "run python UDF"
 
 }
