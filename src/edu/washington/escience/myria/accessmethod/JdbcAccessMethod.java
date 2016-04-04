@@ -1,6 +1,7 @@
 package edu.washington.escience.myria.accessmethod;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -194,7 +195,11 @@ public final class JdbcAccessMethod extends AccessMethod {
                 statement.setString(col + 1, tupleBatch.getString(col, row));
                 break;
               case BYTES_TYPE:
-                statement.setBytes(col + 1, tupleBatch.getByteBuffer(col, row).array());
+                ByteBuffer bb = tupleBatch.getByteBuffer(col, row);
+                byte[] data = new byte[bb.remaining()];
+                bb.get(data);
+                statement.setBytes(col + 1, data);
+                // statement.setBytes(col + 1, tupleBatch.getByteBuffer(col, row).array());
                 break;
             }
           }
