@@ -38,7 +38,7 @@ public class pyUDF extends UnaryOperator {
   // // this is temporarily the pickled object that is sent back
   public static final Schema SCHEMA = Schema.ofFields(Type.BYTES_TYPE, "UDF");
   private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
-  private final String pythonExec = "python";
+  private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
   private ServerSocket serverSocket = null;
   private Socket clientSoc = null;
   private Process worker = null;
