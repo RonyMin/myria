@@ -127,8 +127,11 @@ public class pyUDF extends UnaryOperator {
           }
           if (length >= 0) {
             byte[] b = new byte[length];
+
             dIn.read(b);
             output.putByteBuffer(0, ByteBuffer.wrap(b));
+            LOGGER.info("read bytes from python process " + length);
+
           } else {
             byte[] b = "empty".getBytes();
 
