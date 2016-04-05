@@ -119,10 +119,22 @@ public class pyUDF extends UnaryOperator {
           DataInputStream dIn = new DataInputStream(clientSoc.getInputStream());
 
           int length = 0;
-          length = dIn.readInt(); // read length of incoming message
-          byte[] b = new byte[length];
-          dIn.read(b);
-          output.putByteBuffer(0, ByteBuffer.wrap(b));
+          try {
+            length = dIn.readInt(); // read length of incoming message
+          } catch (Exception e) {
+            length = 0;
+            LOGGER.info("Error reading int from stream");
+          }
+          if (length >= 0) {
+            byte[] b = new byte[length];
+            dIn.read(b);
+            output.putByteBuffer(0, ByteBuffer.wrap(b));
+          } else {
+            byte[] b = "empty".getBytes();
+
+            output.putByteBuffer(0, ByteBuffer.wrap(b));
+            LOGGER.info("worker wrote int length less than zero ");
+          }
 
           // close client socket
           clientSoc.close();
@@ -157,8 +169,6 @@ public class pyUDF extends UnaryOperator {
     worker = pb.start();
 
     OutputStream stdin = worker.getOutputStream();
-    // LOGGER.info("got output stream from process");
-
     OutputStreamWriter out = new OutputStreamWriter(stdin, StandardCharsets.UTF_8);
 
     out.write(serverSocket.getLocalPort() + "\n");
