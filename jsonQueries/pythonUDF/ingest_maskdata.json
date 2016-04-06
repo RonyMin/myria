@@ -1,0 +1,17 @@
+{
+  "relationKey" : {
+    "userName" : "public",
+    "programName" : "blob_operator",
+    "relationName" : "maskdata"
+  },
+  "schema" : {
+    "columnTypes" : ["INT_TYPE", "BYTES_TYPE"],
+    "columnNames" : ["index", "mask"]
+  },
+  "source" : {
+    "dataType" : "File",
+    "filename" : "/Users/parmita/myria/myria-l/myria/jsonQueries/pythonUDF/dmrimask.csv"
+  },
+  "overwrite" : true,
+  "delimiter": ","
+}

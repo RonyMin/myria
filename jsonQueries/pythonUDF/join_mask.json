@@ -1,0 +1,83 @@
+{
+    "fragments": [
+        {
+            "operators": [
+                {
+                    "opId": 7,
+                    "opType": "TableScan",
+                    "relationKey": {
+                        "programName": "blob_operator",
+                        "relationName": "binarydata",
+                        "userName": "public"
+                    }
+                },
+                {
+                    "argChild": 7,
+                    "argPf": {
+                        "index": 0,
+                        "type": "SingleFieldHash"
+                    },
+                    "opId": 0,
+                    "opType": "ShuffleProducer"
+                }
+            ]
+        },
+        {
+            "operators": [
+                {
+                    "opId": 1,
+                    "opType": "TableScan",
+                    "relationKey": {
+                        "programName": "blob_operator",
+                        "relationName": "maskdata",
+                        "userName": "public"
+                    }
+                },
+                {
+                    "argChild": 1,
+                    "argPf": {
+                        "index": 1,
+                        "type": "SingleFieldHash"
+                    },
+                    "opId": 6,
+                    "opType": "ShuffleProducer"
+                }
+            ]
+        },
+        {
+            "operators": [
+                {
+                    "argOperatorId": 0,
+                    "opId": 2,
+                    "opType": "ShuffleConsumer"
+                },
+                {
+                    "argOperatorId": 6,
+                    "opId": 3,
+                    "opType": "ShuffleConsumer"
+                },
+                {
+
+                    "opId": 4,
+                    "argChild1": 2,
+                    "argChild2": 3,
+                    "opType": "CrossWithSingleton"
+                },
+                {
+                    "argChild": 4,
+                    "argOverwriteTable": true,
+                    "opId": 5,
+                    "opType": "DbInsert",
+                    "relationKey": {
+                        "programName": "blob_operator",
+                        "relationName": "binarydata_maskdata",
+                        "userName": "public"
+                    }
+                }
+            ]
+        }
+    ],
+    "logicalRa": "Insert(smallTable_join_smallTable)[Join(1=0; [0,3])[Shuffle(1)[Scan], Shuffle(1)[Scan]]]",
+    "rawQuery": "crossjoinwith singleton for mask data",
+    "language": "datalog"
+}
