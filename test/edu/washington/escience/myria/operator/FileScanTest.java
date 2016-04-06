@@ -118,6 +118,13 @@ public class FileScanTest {
   }
 
   @Test
+  public void testBlobdata() throws DbException, InterruptedException {
+    final String filename = "dmridata.csv";
+    final Schema schema = new Schema(ImmutableList.of(Type.INT_TYPE, Type.BYTES_TYPE));
+    assertEquals(7, getRowCount(filename, schema));
+  }
+
+  @Test
   public void testSimpleCsvSingleQuoted() throws DbException, InterruptedException {
     final String filename = "two_col_string_single_quoted.txt";
     final Schema schema = new Schema(ImmutableList.of(Type.STRING_TYPE, Type.STRING_TYPE));

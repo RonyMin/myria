@@ -5,11 +5,11 @@
     "relationKey": {
       "programName": "blob_operator",
       "userName": "public",
-      "relationName": "binarydata"
+      "relationName": "maskdata"
       },
 
     "opId": 0,
-    "opName": "MyriaScan(public:gblob_operator:binarydata)",
+    "opName": "MyriaScan(public:gblob_operator:maskdata)",
     "opType": "TableScan"
     },
     {
@@ -17,7 +17,9 @@
     "opName": "runUDF",
     "argChild": 0,
     "opType": "pyUDF",
-    "filename": "/Users/parmita/myria/myria-l/myria/worker.py"
+    "filename": "/Users/parmita/myria/myria-l/myria/workerold.py",
+    "columnIdx": [1]
+
     },
 
     {
@@ -28,17 +30,17 @@
         "argOverwriteTable": true,
         "argChild": 1,
         "opType": "DbInsert",
-        "opName": "MyriaStore(public:blob_operator:binarydata)",
+        "opName": "MyriaStore(public:blob_operator:maskdata)",
         "relationKey": {
           "programName": "blob_operator",
           "userName": "public",
-          "relationName": "binarydata_results"
+          "relationName": "maskdata_results"
         },
         "opId": 2
 		}]
 }],
 "language" : "datalog",
-"rawQuery" : "run python UDF",
-"logicalRa": "run python UDF"
+"rawQuery" : "run python UDF-column specified",
+"logicalRa": "run python UDF-column specified"
 
 }

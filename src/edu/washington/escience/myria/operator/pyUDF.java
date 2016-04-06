@@ -37,11 +37,14 @@ public class pyUDF extends UnaryOperator {
   private String filename;
   // // this is temporarily the pickled object that is sent back
   public static final Schema SCHEMA = Schema.ofFields(Type.BYTES_TYPE, "UDF");
+
   private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
-  private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
+  // private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
+  private final String pythonExec = "python";
   private ServerSocket serverSocket = null;
   private Socket clientSoc = null;
   private Process worker = null;
+  private int[] columnIdx = null;
 
   /**
    * The buffer holding the results.
@@ -58,10 +61,11 @@ public class pyUDF extends UnaryOperator {
    * @param child child operator that data is fetched from
    * @param emitExpressions expression that created the output
    */
-  public pyUDF(final String filename, final Operator child) {
+  public pyUDF(final String filename, final int[] columnIdx, final Operator child) {
     super(child);
     if (null != filename) {
       this.filename = filename;
+      this.columnIdx = columnIdx;
     }
 
   }
@@ -86,77 +90,133 @@ public class pyUDF extends UnaryOperator {
     int rows = tb.numTuples();
     final TupleBatchBuffer output = new TupleBatchBuffer(SCHEMA);
 
-    List<? extends Column<?>> inputColumns = tb.getDataColumns();
+    Startworker();
+    if (clientSoc != null) {
+      LOGGER.info("successfully launched worker");
+      try {
+        DataOutputStream dOut = new DataOutputStream(clientSoc.getOutputStream());
+        DataInputStream dIn = new DataInputStream(clientSoc.getInputStream());
 
-    for (int i = 0; i < rows; i++) {
-      ByteBuffer input = null;
-      // look up the schema to figure out which column is BYTE_TYPE and read it in.
-
-      for (int j = 0; j < tb.numColumns(); j++) {
-        if (inputColumns.get(j).getType() == Type.BYTES_TYPE) {
-          input = inputColumns.get(j).getByteBuffer(i);
-        }
-      }
-      LOGGER.info("trying to launch worker for row: " + i);
-
-      if (input != null) {
-        // instead of launch a worker per tuple, and then kill it,
-        // run a process per worker and reuse it.
-        Startworker();
-        if (clientSoc != null) {
-
-          LOGGER.info("successfully launched worker");
-
-          DataOutputStream dOut = new DataOutputStream(clientSoc.getOutputStream());
-
-          dOut.writeInt(input.array().length);
-          dOut.write(input.array());
-          dOut.flush();
-
-          LOGGER.info("wrote to  output stream for the client socket");
-          // get results back!
-
-          DataInputStream dIn = new DataInputStream(clientSoc.getInputStream());
-
-          int length = 0;
-          try {
-            length = dIn.readInt(); // read length of incoming message
-          } catch (Exception e) {
-            length = 0;
-            LOGGER.info("Error reading int from stream");
-          }
-          if (length >= 0) {
-            byte[] b = new byte[length];
-
-            dIn.read(b);
-            output.putByteBuffer(0, ByteBuffer.wrap(b));
-            LOGGER.info("read bytes from python process " + length);
+        for (int i = 0; i < rows; i++) {
+          // write to stream
+          if (writeToStream(dOut, tb, i)) {
+            LOGGER.info("Wrote to stream successfully!");
+            if (readFromStream(dIn, tb, i, output)) {
+              LOGGER.info("successfully read from the stream");
+            }
 
           } else {
-            byte[] b = "empty".getBytes();
-
-            output.putByteBuffer(0, ByteBuffer.wrap(b));
-            LOGGER.info("worker wrote int length less than zero ");
+            LOGGER.info("Error writing to python stream");
+            sendErrorbuffer(output);
           }
-
-          // close client socket
-          clientSoc.close();
-
-        } else {
-          byte[] b = "empty".getBytes();
-
-          output.putByteBuffer(0, ByteBuffer.wrap(b));
-          LOGGER.info("Failed launching worker");
         }
-        if (serverSocket != null) {
-          serverSocket.close();
-        }
+      } catch (IOException e) {
+        LOGGER.info("Exception getting stream from python process");
+
       }
 
+    } else {
+      LOGGER.info("could not launch worker");
+      sendErrorbuffer(output);
+    }
+    // close client socket
+    if (clientSoc != null) {
+      clientSoc.close();
+    }
+
+    if (serverSocket != null) {
+      serverSocket.close();
     }
 
     return output.popAnyUsingTimeout();
 
+  }
+
+  private boolean readFromStream(final DataInputStream dIn, final TupleBatch tb, final int row,
+      final TupleBatchBuffer output) {
+    int length = 0;
+    try {
+      length = dIn.readInt(); // read length of incoming message
+      if (length > 0) {
+        byte[] b = new byte[length];
+        dIn.read(b);
+        output.putByteBuffer(0, ByteBuffer.wrap(b));
+        LOGGER.info("read bytes from python process " + length);
+        return true;
+      }
+    } catch (Exception e) {
+      length = 0;
+      LOGGER.info("Error reading int from stream");
+    }
+    return false;
+  }
+
+  private boolean writeToStream(final DataOutputStream dOut, final TupleBatch tb, final int row) {
+    List<? extends Column<?>> inputColumns = tb.getDataColumns();
+    for (int element : columnIdx) {
+      LOGGER.info("column number " + element);
+
+      Type type = inputColumns.get(element).getType();
+      LOGGER.info("type: " + type.getName());
+
+      try {
+        switch (type) {
+          case BOOLEAN_TYPE:
+            dOut.writeInt(Integer.SIZE / Byte.SIZE);
+            dOut.writeBoolean(inputColumns.get(element).getBoolean(row));
+            break;
+          case DOUBLE_TYPE:
+            dOut.writeInt(Double.SIZE / Byte.SIZE);
+            dOut.writeDouble(inputColumns.get(element).getDouble(row));
+            break;
+          case FLOAT_TYPE:
+            dOut.writeInt(Float.SIZE / Byte.SIZE);
+            dOut.writeFloat(inputColumns.get(element).getFloat(row));
+            break;
+          case INT_TYPE:
+            dOut.writeInt(Integer.SIZE / Byte.SIZE);
+            dOut.writeInt(inputColumns.get(element).getInt(row));
+            break;
+          case LONG_TYPE:
+            dOut.writeInt(Long.SIZE / Byte.SIZE);
+            dOut.writeLong(inputColumns.get(element).getLong(row));
+            break;
+          case STRING_TYPE:
+            StringBuilder sb = new StringBuilder();
+            sb.append(inputColumns.get(element).getString(row));
+            dOut.writeInt(sb.length());
+            dOut.writeChars(sb.toString());
+            break;
+          case DATETIME_TYPE:
+            LOGGER.info("date time not yet supported for python UDF ");
+            break;
+          case BYTES_TYPE:
+            ByteBuffer input = inputColumns.get(element).getByteBuffer(row);
+            dOut.writeInt(input.array().length);
+            LOGGER.info("length of buffer " + input.array().length);
+            dOut.write(input.array());
+            break;
+
+        }
+        dOut.flush();
+      } catch (IOException e) {
+        LOGGER.info("IOException when writing to python process stream");
+        e.printStackTrace();
+        return false;
+
+      }
+
+    }
+
+    return true;
+
+  }
+
+  private void sendErrorbuffer(final TupleBatchBuffer output) {
+    byte[] b = "empty".getBytes();
+
+    output.putByteBuffer(0, ByteBuffer.wrap(b));
+    LOGGER.info("Failed launching worker");
   }
 
   private void Startworker() throws UnknownHostException, IOException {
@@ -169,6 +229,7 @@ public class pyUDF extends UnaryOperator {
 
     pb.redirectError(Redirect.INHERIT);
     pb.redirectOutput(Redirect.INHERIT);
+    // write the env variables to the path of the starting process
     worker = pb.start();
 
     OutputStream stdin = worker.getOutputStream();

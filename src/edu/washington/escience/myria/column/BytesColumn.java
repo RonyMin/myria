@@ -41,7 +41,9 @@ public class BytesColumn extends Column<ByteBuffer> {
   @Override
   public @Nonnull ByteBuffer getObject(final int row) {
 
-    return ByteBuffer.allocate(1);
+    return data[row];
+
+    // return ByteBuffer.allocate(1);
   }
 
   @Override

@@ -6,7 +6,7 @@
   },
   "schema" : {
     "columnTypes" : ["INT_TYPE", "BYTES_TYPE"],
-    "columnNames" : ["col1", "col2"]
+    "columnNames" : ["index", "images"]
   },
   "source" : {
     "dataType" : "File",
