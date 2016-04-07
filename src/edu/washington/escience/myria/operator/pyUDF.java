@@ -39,8 +39,8 @@ public class pyUDF extends UnaryOperator {
   public static final Schema SCHEMA = Schema.ofFields(Type.BYTES_TYPE, "UDF");
 
   private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
-  // private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
-  private final String pythonExec = "/Users/parmita/anaconda/bin/python";
+  private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
+  // private final String pythonExec = "/Users/parmita/anaconda/bin/python";
   // private final String pythonExec = "python";
   private ServerSocket serverSocket = null;
   private Socket clientSoc = null;
