@@ -5,8 +5,8 @@
     "relationName" : "binarydata"
   },
   "schema" : {
-    "columnTypes" : ["INT_TYPE", "BYTES_TYPE"],
-    "columnNames" : ["index", "images"]
+    "columnTypes" : ["INT_TYPE", "BYTES_TYPE","BYTES_TYPE" ],
+    "columnNames" : ["index", "images", "mask"]
   },
   "source" : {
     "dataType" : "File",

@@ -1,0 +1,46 @@
+{
+"fragments": [{
+  "operators": [
+    {
+    "relationKey": {
+      "programName": "blob_operator",
+      "userName": "public",
+      "relationName": "binarydata"
+      },
+
+    "opId": 0,
+    "opName": "MyriaScan(public:gblob_operator:binarydata)",
+    "opType": "TableScan"
+    },
+    {
+    "opId": 1,
+    "opName": "runUDF",
+    "argChild": 0,
+    "opType": "pyUDF",
+    "filename": "/Users/parmita/myria/myria-l/myria/worker.py",
+    "columnIdx": [1,2]
+
+    },
+
+    {
+      "partitionFunction": {
+        "type": "MultiFieldHash",
+        "indexes": [0,1]
+        },
+        "argOverwriteTable": true,
+        "argChild": 1,
+        "opType": "DbInsert",
+        "opName": "MyriaStore(public:blob_operator:binarydata)",
+        "relationKey": {
+          "programName": "blob_operator",
+          "userName": "public",
+          "relationName": "binarydata_maskdata_results"
+        },
+        "opId": 2
+		}]
+}],
+"language" : "datalog",
+"rawQuery" : "run python UDF-column specified",
+"logicalRa": "run python UDF-column specified"
+
+}

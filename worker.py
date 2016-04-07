@@ -4,10 +4,10 @@ import time
 import socket
 import traceback
 import numpy as np
+from dipy.denoise import nlmeans
+from dipy.denoise.noise_estimate import estimate_sigma
 import struct
 import cPickle
-
-
 
 
 
@@ -42,21 +42,25 @@ if __name__ == '__main__':
 
     l = recvMsg(infile)
     f.write("Length file1: "+str(len(l)))
-
-    a = cPickle.loads(l)
-    #print 'got stuff'
-    #print a.shape
-    #print 'sending stuff'
+    image = cPickle.loads(l)
 
 
     #get second file
     l2 = recvMsg(infile)
     f.write("\nLength of  file2: "+str(len(l2)))
+    mask = cPickle.loads(l2)
 
 
-    pic = cPickle.dumps(a, 1)
+    sigma = estimate_sigma(image)
+    f.write("\n got sigma")
 
-    f.write("\nwrote ints: "+ str(len(pic)))
+    denoised_data = nlmeans.nlmeans(image, sigma=sigma, mask=mask)
+    f.write("\ngot denoised data")
+
+    pic = cPickle.dumps(denoised_data, 1)
+
+    f.write("\nWrote denoised image file back,  ints: "+ str(len(pic)))
+
     sendMsg(outfile,pic)
     #sock.close
     f.flush()

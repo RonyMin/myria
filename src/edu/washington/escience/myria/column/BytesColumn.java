@@ -40,15 +40,11 @@ public class BytesColumn extends Column<ByteBuffer> {
 
   @Override
   public @Nonnull ByteBuffer getObject(final int row) {
-
     return data[row];
-
-    // return ByteBuffer.allocate(1);
   }
 
   @Override
   public Type getType() {
-
     return Type.BYTES_TYPE;
   }
 

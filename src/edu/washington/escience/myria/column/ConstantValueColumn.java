@@ -37,8 +37,6 @@ public class ConstantValueColumn extends Column<Comparable<?>> {
   /** The number of rows in this column. */
   private final int size;
 
-  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ConstantValueColumn.class);
-
   /**
    * Instantiate a new ConstantValueColumn that returns the specified values of the specified time and has the specified
    * number of rows.
@@ -75,11 +73,7 @@ public class ConstantValueColumn extends Column<Comparable<?>> {
         break;
 
       case BYTES_TYPE:
-        LOGGER.info("size number of tuples: " + size);
         byteValue = (ByteBuffer) value;
-        if (byteValue.hasArray()) {
-          LOGGER.info("has array and the size is : " + byteValue.array().length);
-        }
         break;
 
     }

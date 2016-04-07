@@ -40,7 +40,8 @@ public class pyUDF extends UnaryOperator {
 
   private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
   // private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
-  private final String pythonExec = "python";
+  private final String pythonExec = "/Users/parmita/anaconda/bin/python";
+  // private final String pythonExec = "python";
   private ServerSocket serverSocket = null;
   private Socket clientSoc = null;
   private Process worker = null;
@@ -247,7 +248,7 @@ public class pyUDF extends UnaryOperator {
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException, IOException {
 
     Preconditions.checkNotNull(filename);
-    // get the worker socket to read and write.
+    // send out the python script to each worker.
 
   }
 
