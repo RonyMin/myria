@@ -1,11 +1,11 @@
 package edu.washington.escience.myria.operator;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.MyriaConstants;
@@ -51,7 +51,7 @@ public class SetGlobal extends RootOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final Map<String, Object> execEnvVars) throws Exception {
     int nodeId =
         (Integer) Preconditions.checkNotNull(execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_NODE_ID),
             "node ID in execEnvVars");

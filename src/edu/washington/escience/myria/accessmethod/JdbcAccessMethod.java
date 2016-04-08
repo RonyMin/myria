@@ -194,10 +194,6 @@ public final class JdbcAccessMethod extends AccessMethod {
                 statement.setString(col + 1, tupleBatch.getString(col, row));
                 break;
               case BYTES_TYPE:
-                // ByteBuffer bb = tupleBatch.getByteBuffer(col, row);
-                // byte[] data = new byte[bb.remaining()];
-                // bb.get(data);
-                // statement.setBytes(col+1, data);
                 statement.setBytes(col + 1, tupleBatch.getByteBuffer(col, row).array());
                 break;
             }

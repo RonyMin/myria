@@ -1,7 +1,8 @@
 package edu.washington.escience.myria.operator;
 
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -41,7 +42,7 @@ public class DuplicateTBGenerator extends LeafOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> initProperties) throws DbException {
+  protected final void init(final Map<String, Object> initProperties) throws DbException {
     numDuplicated = 0;
   }
 

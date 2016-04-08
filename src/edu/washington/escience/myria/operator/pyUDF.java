@@ -16,11 +16,12 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
+import edu.washington.escience.myria.MyriaConstants;
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.Type;
 import edu.washington.escience.myria.column.Column;
@@ -39,8 +40,8 @@ public class pyUDF extends UnaryOperator {
   public static final Schema SCHEMA = Schema.ofFields(Type.BYTES_TYPE, "UDF");
 
   private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(pyUDF.class);
-  private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
-  // private final String pythonExec = "/Users/parmita/anaconda/bin/python";
+  // private final String pythonExec = "/home/ubuntu/anaconda2/bin/python2.7";
+  private final String pythonExec = "/Users/parmita/anaconda/bin/python";
   // private final String pythonExec = "python";
   private ServerSocket serverSocket = null;
   private Socket clientSoc = null;
@@ -155,10 +156,10 @@ public class pyUDF extends UnaryOperator {
   private boolean writeToStream(final DataOutputStream dOut, final TupleBatch tb, final int row) {
     List<? extends Column<?>> inputColumns = tb.getDataColumns();
     for (int element : columnIdx) {
-      LOGGER.info("column number " + element);
+      // LOGGER.info("column number " + element);
 
       Type type = inputColumns.get(element).getType();
-      LOGGER.info("type: " + type.getName());
+      // LOGGER.info("type: " + type.getName());
 
       try {
         switch (type) {
@@ -201,7 +202,7 @@ public class pyUDF extends UnaryOperator {
         }
         dOut.flush();
       } catch (IOException e) {
-        LOGGER.info("IOException when writing to python process stream");
+        // LOGGER.info("IOException when writing to python process stream");
         e.printStackTrace();
         return false;
 
@@ -217,7 +218,7 @@ public class pyUDF extends UnaryOperator {
     byte[] b = "empty".getBytes();
 
     output.putByteBuffer(0, ByteBuffer.wrap(b));
-    LOGGER.info("Failed launching worker");
+    // LOGGER.info("Failed launching worker");
   }
 
   private void Startworker() throws UnknownHostException, IOException {
@@ -245,10 +246,19 @@ public class pyUDF extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException, IOException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException, IOException {
 
     Preconditions.checkNotNull(filename);
     // send out the python script to each worker.
+    if (execEnvVars != null && !execEnvVars.containsKey(MyriaConstants.PYTHON_RUNNER)) {
+      // create a pythonrunner and add it to the execEnvVars
+      LOGGER.info("need to create python process ");
+    } else {
+      // get the pythonrunner and use it from here
+      LOGGER.info("python process exisits - using it now");
+      // / private Socket clientSoc = null;
+
+    }
 
   }
 

@@ -1,10 +1,11 @@
 package edu.washington.escience.myria.operator.agg;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -79,7 +80,7 @@ public final class Aggregate extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     Preconditions.checkState(getSchema() != null, "unable to determine schema in init");
     aggregators = AggUtils.allocateAggs(factories, getChild().getSchema());
     aggregatorStates = AggUtils.allocateAggStates(aggregators);

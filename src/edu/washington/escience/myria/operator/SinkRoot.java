@@ -1,6 +1,6 @@
 package edu.washington.escience.myria.operator;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.storage.TupleBatch;
@@ -70,7 +70,7 @@ public class SinkRoot extends RootOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     cnt = 0;
   }
 

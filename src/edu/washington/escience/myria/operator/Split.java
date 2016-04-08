@@ -1,12 +1,12 @@
 package edu.washington.escience.myria.operator;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -96,7 +96,7 @@ public final class Split extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     final Operator child = getChild();
     Preconditions.checkNotNull(child);
     final Schema inputSchema = child.getSchema();

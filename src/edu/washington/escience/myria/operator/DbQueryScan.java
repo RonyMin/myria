@@ -1,11 +1,11 @@
 package edu.washington.escience.myria.operator;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import edu.washington.escience.myria.DbException;
@@ -173,7 +173,7 @@ public class DbQueryScan extends LeafOperator implements DbReader {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     if (connectionInfo == null) {
       final String dbms = (String) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_DATABASE_SYSTEM);
       if (dbms == null) {

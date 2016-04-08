@@ -2,9 +2,9 @@ package edu.washington.escience.myria.operator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
+import java.util.Map;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -68,7 +68,7 @@ public final class Filter extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     Preconditions.checkNotNull(predicate);
 
     Schema inputSchema = getChild().getSchema();

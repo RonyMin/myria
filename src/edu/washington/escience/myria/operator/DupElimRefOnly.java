@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -190,7 +189,7 @@ public final class DupElimRefOnly extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     uniqueTuples = new HashMap<Integer, List<IndexedTuple>>();
   }
 }

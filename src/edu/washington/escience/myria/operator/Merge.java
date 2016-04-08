@@ -2,12 +2,12 @@ package edu.washington.escience.myria.operator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -185,7 +185,7 @@ public final class Merge extends NAryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  public void init(final Map<String, Object> execEnvVars) throws Exception {
     Objects.requireNonNull(getChildren());
     Preconditions.checkArgument(getNumChildren() > 0);
 

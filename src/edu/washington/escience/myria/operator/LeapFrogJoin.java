@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.gs.collections.impl.list.mutable.primitive.IntArrayList;
 
@@ -621,7 +621,7 @@ public class LeapFrogJoin extends NAryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  public void init(final Map<String, Object> execEnvVars) throws DbException {
 
     Operator[] children = getChildren();
 

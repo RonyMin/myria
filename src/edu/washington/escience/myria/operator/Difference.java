@@ -2,8 +2,8 @@ package edu.washington.escience.myria.operator;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
 import com.gs.collections.impl.list.mutable.primitive.IntArrayList;
 import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
@@ -155,7 +155,7 @@ public final class Difference extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  public void init(final Map<String, Object> execEnvVars) throws DbException {
 
     if (!getLeft().getSchema().compatible(getRight().getSchema())) {
       throw new DbException("Incompatible input schemas");

@@ -22,7 +22,6 @@ import org.apache.hadoop.fs.Path;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -267,7 +266,7 @@ public class NChiladaFileScan extends LeafOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     numDark = -1;
     numGas = -1;
     numStar = -1;

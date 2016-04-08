@@ -2,6 +2,7 @@ package edu.washington.escience.myria.operator.network;
 
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Verify;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.gs.collections.impl.map.mutable.primitive.IntIntHashMap;
 
@@ -137,7 +137,7 @@ public class Consumer extends LeafOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     workerEOS = new BitSet(sourceWorkers.size());
     workerEOI = new BitSet(sourceWorkers.size());
 

@@ -3,10 +3,10 @@ package edu.washington.escience.myria.operator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import edu.washington.escience.myria.DbException;
@@ -673,7 +673,7 @@ public final class MergeJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  public void init(final Map<String, Object> execEnvVars) throws DbException {
     Preconditions.checkArgument(ascending.length == leftCompareIndx.length);
     Preconditions.checkArgument(ascending.length == rightCompareIndx.length);
 

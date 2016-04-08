@@ -1,8 +1,8 @@
 package edu.washington.escience.myria.mrbenchmarks;
 
-import org.joda.time.DateTime;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import org.joda.time.DateTime;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -14,7 +14,7 @@ import edu.washington.escience.myria.storage.TupleBatchBuffer;
 
 public class Top1 extends UnaryOperator {
 
-  public Top1(int toCompareColumnIdx) {
+  public Top1(final int toCompareColumnIdx) {
     this(null, toCompareColumnIdx);
   }
 
@@ -29,7 +29,7 @@ public class Top1 extends UnaryOperator {
   private static final long serialVersionUID = 191438462118946730L;
 
   @Override
-  protected void init(ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     compareType = getSchema().getColumnType(toCompareColumnIdx);
   }
 

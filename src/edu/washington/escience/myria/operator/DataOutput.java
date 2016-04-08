@@ -1,8 +1,7 @@
 package edu.washington.escience.myria.operator;
 
 import java.io.IOException;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.TupleWriter;
@@ -63,7 +62,7 @@ public final class DataOutput extends RootOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     try {
       tupleWriter.open(dataSink.getOutputStream());
       tupleWriter.writeColumnHeaders(getChild().getSchema().getColumnNames());

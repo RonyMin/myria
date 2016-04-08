@@ -1,11 +1,10 @@
 package edu.washington.escience.myria.operator;
 
 import java.util.BitSet;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.storage.TupleBatch;
@@ -70,7 +69,7 @@ public final class OrderedDupElim extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final Map<String, Object> execEnvVars) throws Exception {
     Schema schema = Objects.requireNonNull(getSchema());
     /* Assume the columns are sorted in order by default. */
     if (invSortColumns == null) {

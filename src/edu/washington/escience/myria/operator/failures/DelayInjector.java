@@ -1,8 +1,7 @@
 package edu.washington.escience.myria.operator.failures;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -53,7 +52,7 @@ public class DelayInjector extends UnaryOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> initProperties) throws DbException {
+  protected final void init(final Map<String, Object> initProperties) throws DbException {
   }
 
   @Override

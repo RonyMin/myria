@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.gs.collections.impl.map.mutable.primitive.DoubleObjectHashMap;
 import com.gs.collections.impl.map.mutable.primitive.FloatObjectHashMap;
 import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -325,7 +324,7 @@ public class SingleGroupByAggregate extends UnaryOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     Preconditions.checkState(getSchema() != null, "unable to determine schema in init");
 
     aggregators = AggUtils.allocateAggs(factories, getChild().getSchema());

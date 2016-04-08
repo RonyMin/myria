@@ -2,11 +2,11 @@ package edu.washington.escience.myria.operator;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.gs.collections.api.block.procedure.primitive.IntProcedure;
 import com.gs.collections.impl.list.mutable.primitive.IntArrayList;
 import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -247,7 +247,7 @@ public class RightHashCountingJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  public void init(final Map<String, Object> execEnvVars) throws DbException {
     final Operator right = getRight();
     hashTableIndices = new IntObjectHashMap<>();
     hashTable = new MutableTupleBuffer(right.getSchema().getSubSchema(rightCompareIndx));

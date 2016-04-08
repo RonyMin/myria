@@ -7,9 +7,9 @@ import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.LittleEndianDataInputStream;
 
 import edu.washington.escience.myria.DbException;
@@ -116,7 +116,7 @@ public class BinaryFileScan extends LeafOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected final void init(final Map<String, Object> execEnvVars) throws DbException {
     buffer = new TupleBatchBuffer(getSchema());
     InputStream inputStream;
     try {

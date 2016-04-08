@@ -1,6 +1,6 @@
 package edu.washington.escience.myria.operator;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -17,7 +17,7 @@ public class EOSSource extends LeafOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
 
   }
 

@@ -2,10 +2,10 @@ package edu.washington.escience.myria.operator;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
@@ -75,7 +75,7 @@ public final class UnionAll extends NAryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  public void init(final Map<String, Object> execEnvVars) throws DbException {
     final Operator[] children = Objects.requireNonNull(getChildren(), "children");
     Preconditions.checkArgument(children.length > 0, "UnionAll requires at least one child");
     outputColumnNames = children[0].getSchema().getColumnNames();

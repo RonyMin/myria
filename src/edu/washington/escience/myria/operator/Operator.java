@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import edu.washington.escience.myria.DbException;
@@ -79,12 +78,12 @@ public abstract class Operator implements Serializable {
   /**
    * Environmental variables during execution.
    */
-  private ImmutableMap<String, Object> execEnvVars;
+  private Map<String, Object> execEnvVars;
 
   /**
    * @return return environmental variables
    */
-  public ImmutableMap<String, Object> getExecEnvVars() {
+  public Map<String, Object> getExecEnvVars() {
     return execEnvVars;
   }
 
@@ -384,7 +383,7 @@ public abstract class Operator implements Serializable {
     if (execEnvVars == null) {
       this.execEnvVars = null;
     } else {
-      this.execEnvVars = ImmutableMap.copyOf(execEnvVars);
+      this.execEnvVars = execEnvVars;// /
     }
     final Operator[] children = getChildren();
     if (children != null) {
@@ -437,7 +436,7 @@ public abstract class Operator implements Serializable {
    * @param execEnvVars execution environment variables
    * @throws Exception if any error occurs
    */
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final Map<String, Object> execEnvVars) throws Exception {
   };
 
   /**
@@ -561,4 +560,5 @@ public abstract class Operator implements Serializable {
   public Integer getOpId() {
     return opId;
   }
+
 }

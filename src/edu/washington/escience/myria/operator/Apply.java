@@ -3,11 +3,11 @@ package edu.washington.escience.myria.operator;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import edu.washington.escience.myria.DbException;
@@ -91,7 +91,7 @@ public class Apply extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     Preconditions.checkNotNull(emitExpressions);
 
     Schema inputSchema = Objects.requireNonNull(getChild().getSchema());

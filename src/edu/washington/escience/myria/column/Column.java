@@ -185,7 +185,7 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
     int bblen = 0;
     int startP = 0, endP = 0;
     for (int i = 0; i < column.size(); i++) {
-      bblen = bblen + column.getByteBuffer(i).array().length;// should i use capacity instead here?
+      bblen = bblen + column.getByteBuffer(i).array().length;
     }
     ByteBuffer bb = ByteBuffer.allocate(bblen);
     int offset = bb.position();
@@ -295,7 +295,6 @@ public abstract class Column<T extends Comparable<?>> implements ReadableColumn,
         return defaultLongProto(column);
       case STRING_TYPE:
         return defaultStringProto(column);
-
       case BYTES_TYPE:
         return defaultBytesProto(column);
 

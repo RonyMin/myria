@@ -130,7 +130,7 @@ public class DbInsertTemp extends AbstractDbInsert {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final Map<String, Object> execEnvVars) throws DbException {
     setupConnection(execEnvVars);
 
     if (overwriteTable) {
@@ -175,7 +175,7 @@ public class DbInsertTemp extends AbstractDbInsert {
   }
 
   /** Updates connection information with the environment variables. */
-  protected void setupConnection(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void setupConnection(final Map<String, Object> execEnvVars) throws DbException {
     // Extract connection info from environment
     if (connectionInfo == null && execEnvVars != null) {
       connectionInfo = (ConnectionInfo) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_DATABASE_CONN_INFO);
