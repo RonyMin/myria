@@ -27,6 +27,7 @@ public class CleanupFailureInjector extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
   }
 
   @Override

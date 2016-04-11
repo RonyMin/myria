@@ -138,6 +138,7 @@ public class Consumer extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     workerEOS = new BitSet(sourceWorkers.size());
     workerEOI = new BitSet(sourceWorkers.size());
 

@@ -72,6 +72,7 @@ public final class InMemoryOrderBy extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     Preconditions.checkArgument(sortColumns.length == ascending.length);
     ans = new TupleBatchBuffer(getSchema());
     table = new MutableTupleBuffer(getSchema());

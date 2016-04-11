@@ -115,6 +115,7 @@ public class SeaFlowFileScan extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     buffer = new TupleBatchBuffer(getSchema());
 
     try {

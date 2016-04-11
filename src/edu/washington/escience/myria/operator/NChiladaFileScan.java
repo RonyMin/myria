@@ -268,6 +268,7 @@ public class NChiladaFileScan extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     numDark = -1;
     numGas = -1;
     numStar = -1;

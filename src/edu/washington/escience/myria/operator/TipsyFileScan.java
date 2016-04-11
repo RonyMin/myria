@@ -115,6 +115,7 @@ public class TipsyFileScan extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     buffer = new TupleBatchBuffer(getSchema());
     InputStream iOrderInputStream = openFileOrUrlInputStream(iOrderFileName);
     InputStream grpInputStream = openFileOrUrlInputStream(grpFileName);

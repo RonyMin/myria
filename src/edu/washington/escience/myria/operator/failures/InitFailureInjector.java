@@ -27,6 +27,7 @@ public class InitFailureInjector extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     throw new InjectedFailureException("Failure in init.");
   }
 

@@ -52,6 +52,7 @@ public class SetGlobal extends RootOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     int nodeId =
         (Integer) Preconditions.checkNotNull(execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_NODE_ID),
             "node ID in execEnvVars");

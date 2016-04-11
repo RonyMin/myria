@@ -323,6 +323,7 @@ public class IDBController extends Operator implements StreamingStateful, DbWrit
 
   @Override
   public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     initialInputEnded = false;
     emptyDelta = true;
     resourceManager =

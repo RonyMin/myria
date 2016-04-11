@@ -2,6 +2,7 @@ package edu.washington.escience.myria.operator;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.Type;
 import edu.washington.escience.myria.column.builder.LongColumnBuilder;
@@ -74,7 +75,7 @@ public class Counter extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     count = 0;
   }
 }

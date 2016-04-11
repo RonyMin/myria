@@ -252,6 +252,7 @@ public final class FileScan extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+
     buffer = new TupleBatchBuffer(getSchema());
     try {
       parser =

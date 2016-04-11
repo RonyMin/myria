@@ -75,6 +75,7 @@ public class SingleRandomFailureInjector extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     toFail = false;
     if (!hasFailed) {
       failureInjectThread = new Thread() {

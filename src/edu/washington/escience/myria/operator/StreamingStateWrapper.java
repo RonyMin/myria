@@ -39,6 +39,7 @@ public class StreamingStateWrapper extends UnaryOperator implements StreamingSta
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     state.init(execEnvVars);
   }
 

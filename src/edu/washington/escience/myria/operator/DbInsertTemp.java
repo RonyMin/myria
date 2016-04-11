@@ -131,6 +131,7 @@ public class DbInsertTemp extends AbstractDbInsert {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+
     setupConnection(execEnvVars);
 
     if (overwriteTable) {

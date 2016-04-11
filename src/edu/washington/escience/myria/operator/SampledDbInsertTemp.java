@@ -118,6 +118,7 @@ public class SampledDbInsertTemp extends DbInsertTemp {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     setupConnection(execEnvVars);
 
     // Set up the reservoir table.

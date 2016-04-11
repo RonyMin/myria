@@ -42,6 +42,7 @@ public class DuplicateTBGenerator extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+
     numDuplicated = 0;
   }
 

@@ -225,6 +225,7 @@ public class Sample extends BinaryOperator {
 
   @Override
   public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     ans = new TupleBatchBuffer(getSchema());
   }
 

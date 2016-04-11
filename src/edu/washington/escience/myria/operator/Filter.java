@@ -68,7 +68,7 @@ public final class Filter extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     Preconditions.checkNotNull(predicate);
 
     Schema inputSchema = getChild().getSchema();

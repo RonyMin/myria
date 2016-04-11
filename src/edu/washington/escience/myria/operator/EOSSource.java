@@ -18,6 +18,7 @@ public class EOSSource extends LeafOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+
   }
 
   @Override

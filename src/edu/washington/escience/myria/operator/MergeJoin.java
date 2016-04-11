@@ -673,7 +673,7 @@ public final class MergeJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     Preconditions.checkArgument(ascending.length == leftCompareIndx.length);
     Preconditions.checkArgument(ascending.length == rightCompareIndx.length);
 

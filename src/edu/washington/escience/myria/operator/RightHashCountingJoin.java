@@ -247,7 +247,7 @@ public class RightHashCountingJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     final Operator right = getRight();
     hashTableIndices = new IntObjectHashMap<>();
     hashTable = new MutableTupleBuffer(right.getSchema().getSubSchema(rightCompareIndx));

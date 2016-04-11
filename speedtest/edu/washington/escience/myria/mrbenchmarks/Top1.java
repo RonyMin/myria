@@ -30,6 +30,7 @@ public class Top1 extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     compareType = getSchema().getColumnType(toCompareColumnIdx);
   }
 

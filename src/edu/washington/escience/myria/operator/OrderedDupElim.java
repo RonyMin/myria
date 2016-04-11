@@ -72,6 +72,7 @@ public final class OrderedDupElim extends UnaryOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
     Schema schema = Objects.requireNonNull(getSchema());
     /* Assume the columns are sorted in order by default. */
     if (invSortColumns == null) {

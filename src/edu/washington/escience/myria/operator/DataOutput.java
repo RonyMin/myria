@@ -64,6 +64,7 @@ public final class DataOutput extends RootOperator {
 
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+
     try {
       tupleWriter.open(dataSink.getOutputStream());
       tupleWriter.writeColumnHeaders(getChild().getSchema().getColumnNames());
