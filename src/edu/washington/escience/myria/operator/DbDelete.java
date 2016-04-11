@@ -39,7 +39,7 @@ public class DbDelete extends RootOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     /* Retrieve connection information from the environment variables, if not already set */
     if (connectionInfo == null && execEnvVars != null) {
       connectionInfo = (ConnectionInfo) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_DATABASE_CONN_INFO);

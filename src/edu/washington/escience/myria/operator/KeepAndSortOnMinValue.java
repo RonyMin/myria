@@ -3,12 +3,12 @@ package edu.washington.escience.myria.operator;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
 import com.gs.collections.api.block.procedure.primitive.IntProcedure;
@@ -181,7 +181,7 @@ public final class KeepAndSortOnMinValue extends StreamingState {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) {
+  public void init(final Map<String, Object> execEnvVars) {
     uniqueTupleIndices = new IntObjectHashMap<IntArrayList>();
     uniqueTuples = new MutableTupleBuffer(getSchema());
     doReplace = new ReplaceProcedure();

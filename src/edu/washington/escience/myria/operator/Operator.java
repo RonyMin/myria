@@ -561,4 +561,5 @@ public abstract class Operator implements Serializable {
   public Integer getOpId() {
     return opId;
   }
+
 }

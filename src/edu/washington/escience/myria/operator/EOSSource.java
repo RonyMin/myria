@@ -17,8 +17,7 @@ public class EOSSource extends LeafOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
-
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
   }
 
   @Override

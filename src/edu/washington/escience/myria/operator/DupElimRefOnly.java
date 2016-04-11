@@ -190,7 +190,7 @@ public final class DupElimRefOnly extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     uniqueTuples = new HashMap<Integer, List<IndexedTuple>>();
   }
 }

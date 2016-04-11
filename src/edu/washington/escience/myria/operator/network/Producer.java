@@ -192,7 +192,7 @@ public abstract class Producer extends RootOperator {
 
   @SuppressWarnings("unchecked")
   @Override
-  public final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     taskResourceManager =
         (LocalFragmentResourceManager) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER);
     partitionBuffers = new TupleBatchBuffer[numOfPartition];

@@ -67,7 +67,7 @@ public class SQLiteSetFilter extends UnaryOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     sqliteInfo = (SQLiteInfo) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_DATABASE_CONN_INFO);
     if (sqliteInfo == null) {
       throw new DbException("Unable to instantiate SQLiteQueryScan on non-sqlite worker");

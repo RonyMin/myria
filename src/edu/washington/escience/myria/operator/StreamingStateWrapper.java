@@ -2,6 +2,7 @@ package edu.washington.escience.myria.operator;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.storage.TupleBatch;
 
@@ -37,7 +38,7 @@ public class StreamingStateWrapper extends UnaryOperator implements StreamingSta
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     state.init(execEnvVars);
   }
 

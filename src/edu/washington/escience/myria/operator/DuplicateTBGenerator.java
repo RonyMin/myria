@@ -41,7 +41,7 @@ public class DuplicateTBGenerator extends LeafOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> initProperties) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     numDuplicated = 0;
   }
 

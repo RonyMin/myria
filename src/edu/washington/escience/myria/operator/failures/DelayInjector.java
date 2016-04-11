@@ -53,7 +53,7 @@ public class DelayInjector extends UnaryOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> initProperties) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
   }
 
   @Override

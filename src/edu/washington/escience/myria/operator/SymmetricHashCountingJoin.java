@@ -285,7 +285,7 @@ public final class SymmetricHashCountingJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     leftHashTableIndices = new IntObjectHashMap<>();
     rightHashTableIndices = new IntObjectHashMap<>();
     occuredTimesOnLeft = new IntArrayList();

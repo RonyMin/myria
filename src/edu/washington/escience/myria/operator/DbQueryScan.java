@@ -173,7 +173,7 @@ public class DbQueryScan extends LeafOperator implements DbReader {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     if (connectionInfo == null) {
       final String dbms = (String) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_DATABASE_SYSTEM);
       if (dbms == null) {

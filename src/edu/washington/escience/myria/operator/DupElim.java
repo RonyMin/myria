@@ -2,11 +2,11 @@ package edu.washington.escience.myria.operator;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.gs.collections.api.block.procedure.primitive.IntProcedure;
 import com.gs.collections.impl.list.mutable.primitive.IntArrayList;
 import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -94,7 +94,7 @@ public final class DupElim extends StreamingState {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) {
+  public void init(final Map<String, Object> execEnvVars) {
     uniqueTupleIndices = new IntObjectHashMap<>();
     uniqueTuples = new MutableTupleBuffer(getSchema());
     checkUniqueness = new CheckUniquenessProcedure();

@@ -3,6 +3,7 @@ package edu.washington.escience.myria.operator.apply;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.ByteBuffer;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class CastTest {
    * @return the constant value
    * @throws DbException if there is an error evaluating the expression
    */
-  private Object evaluateCastExpression(ExpressionOperator op, Type type) throws DbException {
+  private Object evaluateCastExpression(final ExpressionOperator op, final Type type) throws DbException {
     Expression expr = new Expression("op", new CastExpression(op, new TypeExpression(type)));
     ConstantEvaluator eval = new ConstantEvaluator(expr, new ExpressionOperatorParameter(Schema.EMPTY_SCHEMA));
     return eval.eval();
@@ -41,7 +42,7 @@ public class CastTest {
    * @return the constant value
    * @throws Throwable the root cause of a failed Janino compilation.
    */
-  private Object evaluateCastAndUnrollException(ExpressionOperator op, Type type) throws Throwable {
+  private Object evaluateCastAndUnrollException(final ExpressionOperator op, final Type type) throws Throwable {
     try {
       Object ans = evaluateCastExpression(op, type);
       assertType(ans, type);
@@ -59,7 +60,7 @@ public class CastTest {
     }
   }
 
-  private void assertType(Object obj, Type type) throws DbException {
+  private void assertType(final Object obj, final Type type) throws DbException {
     switch (type) {
       case INT_TYPE:
         assertEquals(obj.getClass(), Integer.class);
@@ -78,6 +79,9 @@ public class CastTest {
         break;
       case DATETIME_TYPE:
         assertEquals(obj.getClass(), DateTime.class);
+        break;
+      case BYTES_TYPE:
+        assertEquals(obj.getClass(), ByteBuffer.class);
         break;
       case BOOLEAN_TYPE:
         assertEquals(obj.getClass(), Boolean.class);

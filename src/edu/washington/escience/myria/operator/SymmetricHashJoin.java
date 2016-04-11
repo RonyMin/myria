@@ -599,7 +599,7 @@ public final class SymmetricHashJoin extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     final Operator left = getLeft();
     final Operator right = getRight();
     leftHashTableIndices = new IntObjectHashMap<IntArrayList>();

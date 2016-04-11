@@ -2,11 +2,10 @@ package edu.washington.escience.myria.operator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.storage.TupleBatch;
@@ -40,7 +39,7 @@ public final class SimpleAppender extends StreamingState {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) {
+  public void init(final Map<String, Object> execEnvVars) {
     tuples = new ArrayList<TupleBatch>();
   }
 

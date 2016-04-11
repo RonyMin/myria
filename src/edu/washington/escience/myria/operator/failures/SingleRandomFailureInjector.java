@@ -74,7 +74,7 @@ public class SingleRandomFailureInjector extends UnaryOperator {
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> initProperties) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     toFail = false;
     if (!hasFailed) {
       failureInjectThread = new Thread() {

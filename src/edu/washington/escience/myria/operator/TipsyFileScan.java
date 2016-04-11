@@ -114,7 +114,7 @@ public class TipsyFileScan extends LeafOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     buffer = new TupleBatchBuffer(getSchema());
     InputStream iOrderInputStream = openFileOrUrlInputStream(iOrderFileName);
     InputStream grpInputStream = openFileOrUrlInputStream(grpFileName);
@@ -137,8 +137,7 @@ public class TipsyFileScan extends LeafOperator {
       if (ntot != ngas + ndark + nstar) {
         throw new DbException("header info incorrect");
       }
-      if (fStreamForBin instanceof FileInputStream &&
-              proposed != ((FileInputStream)fStreamForBin).getChannel().size()) {
+      if (fStreamForBin instanceof FileInputStream && proposed != ((FileInputStream) fStreamForBin).getChannel().size()) {
         throw new DbException("binary file size incorrect");
       }
     } catch (IOException e) {
@@ -320,24 +319,24 @@ public class TipsyFileScan extends LeafOperator {
     return TIPSY_SCHEMA;
   }
 
-  private static InputStream openFileOrUrlInputStream(String filenameOrUrl) throws DbException {
+  private static InputStream openFileOrUrlInputStream(final String filenameOrUrl) throws DbException {
     try {
       return new URI(filenameOrUrl).toURL().openConnection().getInputStream();
-    } catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       return openFileInputStream(filenameOrUrl);
-    } catch(URISyntaxException e) {
+    } catch (URISyntaxException e) {
       return openFileInputStream(filenameOrUrl);
-    } catch(MalformedURLException e) {
+    } catch (MalformedURLException e) {
       return openFileInputStream(filenameOrUrl);
-    } catch(IOException e) {
+    } catch (IOException e) {
       throw new DbException(e);
     }
   }
 
-  private static InputStream openFileInputStream(String filename) throws DbException {
+  private static InputStream openFileInputStream(final String filename) throws DbException {
     try {
       return new FileInputStream(filename);
-    } catch(FileNotFoundException e) {
+    } catch (FileNotFoundException e) {
       throw new DbException(e);
     }
   }

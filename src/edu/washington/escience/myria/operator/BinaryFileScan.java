@@ -116,7 +116,7 @@ public class BinaryFileScan extends LeafOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
     buffer = new TupleBatchBuffer(getSchema());
     InputStream inputStream;
     try {

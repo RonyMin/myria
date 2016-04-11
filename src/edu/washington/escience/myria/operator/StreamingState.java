@@ -2,8 +2,7 @@ package edu.washington.escience.myria.operator;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.storage.TupleBatch;
@@ -38,7 +37,7 @@ public abstract class StreamingState implements Serializable {
    * 
    * @param execEnvVars environment variables.
    */
-  public abstract void init(final ImmutableMap<String, Object> execEnvVars);
+  public abstract void init(final Map<String, Object> execEnvVars);
 
   /**
    * cleanup, as what we have in Operator.

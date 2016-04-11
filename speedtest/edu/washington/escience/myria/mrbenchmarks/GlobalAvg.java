@@ -14,11 +14,11 @@ import edu.washington.escience.myria.storage.TupleBatch;
 
 public class GlobalAvg extends UnaryOperator {
 
-  public GlobalAvg(int sumIdx, int countIdx) {
+  public GlobalAvg(final int sumIdx, final int countIdx) {
     this(null, sumIdx, countIdx);
   }
 
-  public GlobalAvg(Operator child, int sumIdx, int countIdx) {
+  public GlobalAvg(final Operator child, final int sumIdx, final int countIdx) {
     super(child);
     this.sumIdx = sumIdx;
     this.countIdx = countIdx;
@@ -30,7 +30,7 @@ public class GlobalAvg extends UnaryOperator {
   private static final long serialVersionUID = 191438462118946730L;
 
   @Override
-  protected void init(ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
   }
 
   @Override

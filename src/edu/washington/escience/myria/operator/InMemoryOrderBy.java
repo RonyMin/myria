@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
+import edu.washington.escience.myria.DbException;
 import edu.washington.escience.myria.Schema;
 import edu.washington.escience.myria.Type;
 import edu.washington.escience.myria.column.Column;
@@ -70,7 +71,7 @@ public final class InMemoryOrderBy extends UnaryOperator {
   }
 
   @Override
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     Preconditions.checkArgument(sortColumns.length == ascending.length);
     ans = new TupleBatchBuffer(getSchema());
     table = new MutableTupleBuffer(getSchema());

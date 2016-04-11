@@ -185,7 +185,7 @@ public final class Merge extends NAryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
+  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     Objects.requireNonNull(getChildren());
     Preconditions.checkArgument(getNumChildren() > 0);
 

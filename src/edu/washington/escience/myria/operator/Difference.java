@@ -155,7 +155,7 @@ public final class Difference extends BinaryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
 
     if (!getLeft().getSchema().compatible(getRight().getSchema())) {
       throw new DbException("Incompatible input schemas");

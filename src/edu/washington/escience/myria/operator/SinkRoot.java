@@ -70,7 +70,7 @@ public class SinkRoot extends RootOperator {
   }
 
   @Override
-  protected final void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
     cnt = 0;
   }
 

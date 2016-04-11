@@ -14,11 +14,11 @@ import edu.washington.escience.myria.storage.TupleBatch;
 
 public class SubStr extends UnaryOperator {
 
-  public SubStr(final int substrColumnIdx, int fromCharIdx, int endCharIdx) {
+  public SubStr(final int substrColumnIdx, final int fromCharIdx, final int endCharIdx) {
     this(null, substrColumnIdx, fromCharIdx, endCharIdx);
   }
 
-  public SubStr(final Operator child, final int substrColumnIdx, int fromCharIdx, int endCharIdx) {
+  public SubStr(final Operator child, final int substrColumnIdx, final int fromCharIdx, final int endCharIdx) {
     super(child);
     this.substrColumnIdx = substrColumnIdx;
     this.fromCharIdx = fromCharIdx;
@@ -29,7 +29,8 @@ public class SubStr extends UnaryOperator {
   private static final long serialVersionUID = 1471148052154135619L;
 
   @Override
-  protected void init(ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+
   }
 
   @Override

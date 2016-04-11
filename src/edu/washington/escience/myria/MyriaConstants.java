@@ -77,6 +77,10 @@ public final class MyriaConstants {
    */
   public static final String EXEC_ENV_VAR_PROFILING_MODE = "profiling_mode";
 
+  /**
+   * python runner
+   */
+  public static final String PYTHON_RUNNER = "pythonRunner";
   /** Time interval between two heartbeats. */
   public static final int HEARTBEAT_INTERVAL = 1000;
 

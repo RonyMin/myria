@@ -621,7 +621,7 @@ public class LeapFrogJoin extends NAryOperator {
   }
 
   @Override
-  public void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
 
     Operator[] children = getChildren();
 
