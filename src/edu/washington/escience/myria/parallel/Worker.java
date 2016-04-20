@@ -619,6 +619,7 @@ public final class Worker {
     String jsonConnInfo = config.getSelfJsonConnInfo();
     LOGGER.info("Worker: Connection info " + jsonConnInfo);
     execEnvVars.put(MyriaConstants.EXEC_ENV_VAR_DATABASE_CONN_INFO, ConnectionInfo.of(databaseSystem, jsonConnInfo));
+    execEnvVars.put(MyriaConstants.WORKING_DIRECTORY, workingDirectory);
   }
 
   /**

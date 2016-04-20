@@ -78,9 +78,18 @@ public final class MyriaConstants {
   public static final String EXEC_ENV_VAR_PROFILING_MODE = "profiling_mode";
 
   /**
-   * python runner
+   * python executable name
    */
-  public static final String PYTHON_RUNNER = "pythonRunner";
+  public static final String PYTHONEXEC = "python";
+  /**
+   * python module discovery env variable
+   */
+  public static final String PYTHONPATH = "PYTHONPATH";
+  /**
+   * myria working directory
+   */
+  public static final String WORKING_DIRECTORY = "workingDir";
+
   /** Time interval between two heartbeats. */
   public static final int HEARTBEAT_INTERVAL = 1000;
 
@@ -261,6 +270,8 @@ public final class MyriaConstants {
    */
   public static final String[] DEFAULT_JANINO_IMPORTS =
       { "com.google.common.hash.Hashing", "java.nio.charset.Charset" };
+
+  public static final String DEFAULT_PYTHONPATH = "python";
 
   /** Private constructor to disallow building utility class. */
   private MyriaConstants() {

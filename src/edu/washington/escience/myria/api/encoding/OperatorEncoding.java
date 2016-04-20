@@ -66,7 +66,7 @@ import edu.washington.escience.myria.operator.Operator;
     @Type(name = "TempInsert", value = TempInsertEncoding.class),
     @Type(name = "TempTableScan", value = TempTableScanEncoding.class),
     @Type(name = "TipsyFileScan", value = TipsyFileScanEncoding.class),
-    @Type(name = "pyUDF", value = pyUDFEncoding.class), @Type(name = "UnionAll", value = UnionAllEncoding.class) })
+    @Type(name = "PyUDF", value = PyUDFEncoding.class), @Type(name = "UnionAll", value = UnionAllEncoding.class) })
 public abstract class OperatorEncoding<T extends Operator> extends MyriaApiEncoding {
 
   @Required

@@ -4,12 +4,12 @@
 package edu.washington.escience.myria.api.encoding;
 
 import edu.washington.escience.myria.api.encoding.QueryConstruct.ConstructArgs;
-import edu.washington.escience.myria.operator.pyUDF;
+import edu.washington.escience.myria.operator.PyUDF;
 
 /**
  * 
  */
-public class pyUDFEncoding extends UnaryOperatorEncoding<pyUDF> {
+public class PyUDFEncoding extends UnaryOperatorEncoding<PyUDF> {
 
   @Required
   // public Expression argPredicate;
@@ -18,7 +18,7 @@ public class pyUDFEncoding extends UnaryOperatorEncoding<pyUDF> {
   public int[] columnIdx;
 
   @Override
-  public pyUDF construct(final ConstructArgs args) {
-    return new pyUDF(filename, columnIdx, null);
+  public PyUDF construct(final ConstructArgs args) {
+    return new PyUDF(filename, columnIdx, null);
   }
 }

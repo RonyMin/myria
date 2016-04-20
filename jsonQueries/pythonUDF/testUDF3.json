@@ -16,10 +16,9 @@
     "opId": 1,
     "opName": "runUDF",
     "argChild": 0,
-    "opType": "pyUDF",
-    "filename": "/Users/parmita/myria/myria-l/myria/worker.py",
+    "opType": "PyUDF",
+    "filename": "MyriaPythonUDF.code",
     "columnIdx": [1,2]
-
     },
 
     {

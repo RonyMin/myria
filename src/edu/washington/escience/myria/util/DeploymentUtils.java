@@ -109,6 +109,7 @@ public final class DeploymentUtils {
     }
     jvmOptions.add("-Djava.util.logging.config.file=logging.properties");
     jvmOptions.add("-Dlog4j.configuration=log4j.properties");
+
     jvmOptions.add("-Djava.library.path=" + workingDir + "/" + "sqlite4java-392");
     String gangliaMasterHost = config.getOptional("deployment", MyriaSystemConfigKeys.GANGLIA_MASTER_HOST);
     if (gangliaMasterHost != null) {
@@ -119,6 +120,7 @@ public final class DeploymentUtils {
       jvmOptions.add("-javaagent:" + metricsJarPath + "=host=" + gangliaMasterHost + ",port=" + gangliaMasterPort
           + ",config=" + workingDir + "/conf/jmxetric.xml,process=MyriaMaster");
     }
+
     startMaster(hostname, workingDir, restPort, ssl, jvmOptions);
   }
 
@@ -152,6 +154,7 @@ public final class DeploymentUtils {
     }
     jvmOptions.add("-Djava.util.logging.config.file=logging.properties");
     jvmOptions.add("-Dlog4j.configuration=log4j.properties");
+
     jvmOptions.add("-Djava.library.path=" + workingDir + "/" + "sqlite4java-392");
     String gangliaMasterHost = config.getOptional("deployment", MyriaSystemConfigKeys.GANGLIA_MASTER_HOST);
     if (gangliaMasterHost != null) {
@@ -162,6 +165,7 @@ public final class DeploymentUtils {
       jvmOptions.add("-javaagent:" + metricsJarPath + "=host=" + gangliaMasterHost + ",port=" + gangliaMasterPort
           + ",config=" + workingDir + "/conf/jmxetric.xml,process=MyriaWorker_" + workerId);
     }
+
     startWorker(hostname, workingDir, workerId, port, jvmOptions);
   }
 
@@ -388,6 +392,9 @@ public final class DeploymentUtils {
    */
   public static void rsyncFileToRemote(final String localPath, final String address, final String remotePath,
       @Nonnull final List<String> includes, @Nonnull final List<String> excludes) {
+    LOGGER.info("localpath: " + localPath);
+    LOGGER.info("remote path:" + remotePath);
+
     ArrayList<String> command = new ArrayList<String>();
     command.add("rsync");
     command.add("-rtLDvz");

@@ -30,14 +30,14 @@ import edu.washington.escience.myria.util.TestEnvVars;
 /**
  * 
  */
-public class pyUDFTest {
+public class PyUDFTest {
   @Test
   public void runSimpleScript() throws DbException {
     // One data point should be within the range, and the other is outside the range
     final Schema schema =
         new Schema(ImmutableList.of(Type.INT_TYPE, Type.INT_TYPE, Type.INT_TYPE), ImmutableList.of("a", "b", "c"));
     final TupleBatchBuffer testBase = new TupleBatchBuffer(schema);
-    String filename = "test.py";
+    String filename = "worker.py";
     // The middle case
     testBase.putInt(0, 4);
     testBase.putInt(1, 1);
@@ -62,11 +62,13 @@ public class pyUDFTest {
         System.out.println(e);
       }
     }
-    pyUDF pyUDF = new pyUDF(filename, new TupleSource(testBase));
+    int[] columnidx = new int[1];
+    columnidx[0] = 0;
+    PyUDF PyUDF = new PyUDF(filename, columnidx, new TupleSource(testBase));
 
     // getRowCount(pyUDF);
     // Filter filter = new Filter(WithinSumRangeExpression(0, 1, 2), new TupleSource(testBase));
-    assertEquals(3, getRowCount(pyUDF));
+    assertEquals(3, getRowCount(PyUDF));
   }
 
   private static int getRowCount(final Operator operator) throws DbException {
