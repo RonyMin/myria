@@ -32,6 +32,8 @@ class PickleSerializer(object):
 
   def _write_with_length(self, obj, stream):
       serialized = self.dumps(obj)
+      print("serilizedobjec is ready ")
+      print(str(len(serialized)))
       if serialized is None:
           raise ValueError("serialized value should not be None")
       if len(serialized)>(1<<31):
@@ -39,6 +41,7 @@ class PickleSerializer(object):
 
       write_int(len(serialized), stream)
       stream.write(serialized)
+      print("wrote the serialized object back")
 
 
   def _read_with_length(self,stream, size):

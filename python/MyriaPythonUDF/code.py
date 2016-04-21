@@ -42,7 +42,7 @@ if __name__ == '__main__':
       sigma = estimate_sigma(image)
       denoised_data = nlmeans.nlmeans(image, sigma=sigma, mask=mask)
       print "finished denoising"
-      return denoised_data
+      return denoised_data.shape
         #yield denoised_data
 
 

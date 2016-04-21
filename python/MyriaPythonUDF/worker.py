@@ -67,7 +67,13 @@ if __name__ == '__main__':
     java_port = int(sys.stdin.readline())
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(("127.0.0.1", java_port))
-    infile = os.fdopen(os.dup(sock.fileno()), "rb", 65536)
-    outfile = os.fdopen(os.dup(sock.fileno()), "wb", 65536)
-
-    main(infile, outfile)
+    infile = os.fdopen(os.dup(sock.fileno()), "a+", 262144)
+    outfile = os.fdopen(os.dup(sock.fileno()), "a+", 262144)
+    exit_code = 0
+    try:
+        main(infile,outfile)
+    except SystemExit as exc:
+        exit_code = exc.code
+    finally:
+        outfile.flush()
+        sock.close()

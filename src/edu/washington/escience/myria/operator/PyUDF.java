@@ -49,6 +49,7 @@ public class PyUDF extends UnaryOperator {
   private DataOutputStream dOut;
   private DataInputStream dIn;
   private byte[] pyCode;
+  private String pythonPath;
 
   /**
    * The buffer holding the results.
@@ -70,8 +71,12 @@ public class PyUDF extends UnaryOperator {
     if (null != filename) {
       this.filename = filename;
       this.columnIdx = columnIdx;
+      // setup python path
+      StringBuilder sb = new StringBuilder();
+      sb.append(System.getenv("HOME"));
+      sb.append("/anaconda/bin");
+      pythonPath = sb.toString();
 
-      // this is where the pycode should be initialized later
     }
 
   }
@@ -123,18 +128,33 @@ public class PyUDF extends UnaryOperator {
     int length = 0;
 
     try {
-      LOGGER.info("starting to read int from python process " + length);
+      LOGGER.info("starting to read int from python process ");
       length = dIn.readInt(); // read length of incoming message
-      LOGGER.info("length of message to be read from python process" + length);
-      if (length > 0) {
-        byte[] b = new byte[length];
-        dIn.read(b);
-        output.putByteBuffer(0, ByteBuffer.wrap(b));
-        LOGGER.info("read bytes from python process " + length);
+      LOGGER.info("length of message to be read from python process " + length);
+      switch (length) {
+
+        case -2:
+          int excepLength = dIn.readInt();
+          byte[] excp = new byte[excepLength];
+          dIn.readFully(excp);
+          throw new DbException(new String(excp));
+        case -3:
+          LOGGER.info("end of stream");
+          break;
+
+        default:
+          if (length > 0) {
+            LOGGER.info("lenght >0");
+            byte[] obj = new byte[length];
+            dIn.readFully(obj);
+            output.putByteBuffer(0, ByteBuffer.wrap(obj));
+            LOGGER.info("read bytes from python process " + length);
+          }
+          break;
 
       }
+
     } catch (Exception e) {
-      length = 0;
       LOGGER.info("Error reading int from stream");
       throw new DbException(e);
     }
@@ -142,28 +162,76 @@ public class PyUDF extends UnaryOperator {
   }
 
   private void sendErrorbuffer(final TupleBatchBuffer output) {
-    byte[] b = "empty".getBytes();
+    byte[] b = "1".getBytes();
 
     output.putByteBuffer(0, ByteBuffer.wrap(b));
-    // LOGGER.info("Failed launching worker");
+
   }
 
-  private void Startworker(final String pythonExecPath) throws UnknownHostException, IOException {
+  // open a server socket for operator
+  private void createServerSock() throws UnknownHostException, IOException {
 
     serverSocket = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
     int a = serverSocket.getLocalPort();
     LOGGER.info("created socket " + a);
+
+  }
+
+  private void getPyCode() throws IOException {
+    // this function creates a py process
+    // connects to this server socket
+    // uses the client socket to gets the py code
+    // closes the client socket
+
+    ProcessBuilder pb = new ProcessBuilder(MyriaConstants.DEFAULT_PYTHONPATH, "-m", filename);
+    final Map<String, String> env = pb.environment();
+
+    // add python process to path
+    StringBuilder sb = new StringBuilder();
+    sb.append(pythonPath);
+    sb.append(":");
+    sb.append(env.get("PATH"));
+    env.put("PATH", sb.toString());
+
+    pb.redirectError(Redirect.INHERIT);
+    pb.redirectOutput(Redirect.INHERIT);
+
+    Process codeReader = pb.start();
+
+    OutputStream stdin = codeReader.getOutputStream();
+    OutputStreamWriter out = new OutputStreamWriter(stdin, StandardCharsets.UTF_8);
+
+    out.write(serverSocket.getLocalPort() + "\n");
+    out.flush();
+
+    Socket tmpClientSock = serverSocket.accept();
+    setCode(tmpClientSock);
+
+    if (tmpClientSock != null) {
+      tmpClientSock.close();
+    }
+
+    if (codeReader != null) {
+      codeReader.destroy();
+    }
+
+  }
+
+  private void startPyRunner() throws IOException {
+    // this function creates a py process
+    // connects to this server socket
+    // sets the process as worker for the operator
+    // creates streams ( input and output) for the operator
     // TODO : fix the worker filename -- it should be a myria constant and installed as part of setup.
 
     String workerfilename = "MyriaPythonUDF.worker";
     ProcessBuilder pb = new ProcessBuilder(MyriaConstants.DEFAULT_PYTHONPATH, "-m", workerfilename);
     final Map<String, String> env = pb.environment();
 
-    String path = env.get("PATH");
     StringBuilder sb = new StringBuilder();
-    sb.append(pythonExecPath);
+    sb.append(pythonPath);
     sb.append(":");
-    sb.append(path);
+    sb.append(env.get("PATH"));
     env.put("PATH", sb.toString());
 
     // String pythonPath = createPythonPath(env.get(MyriaConstants.PYTHONPATH), pythonModulePath);
@@ -171,6 +239,7 @@ public class PyUDF extends UnaryOperator {
 
     pb.redirectError(Redirect.INHERIT);
     pb.redirectOutput(Redirect.INHERIT);
+
     // write the env variables to the path of the starting process
     worker = pb.start();
 
@@ -180,11 +249,23 @@ public class PyUDF extends UnaryOperator {
     out.write(serverSocket.getLocalPort() + "\n");
     out.flush();
     clientSock = serverSocket.accept();
+    LOGGER.info("successfully launched worker");
+    setupStreams();
 
     return;
 
   }
 
+  private void setupStreams() throws IOException {
+    if (clientSock != null) {
+      dOut = new DataOutputStream(clientSock.getOutputStream());
+      dIn = new DataInputStream(clientSock.getInputStream());
+      LOGGER.info("successfully setup streams");
+    }
+
+  }
+
+  // stopPyRunner
   @Override
   protected void init(final ImmutableMap<String, Object> execEnvVars) throws DbException {
 
@@ -192,107 +273,27 @@ public class PyUDF extends UnaryOperator {
     // start worker
     try {
 
-      String home = System.getenv("HOME");
-      // LOGGER.info("home of current process" + home);
+      createServerSock();
 
-      String pythonpath = "/anaconda/bin";
+      getPyCode();
+      startPyRunner();
 
-      StringBuilder sb = new StringBuilder();
-      sb.append(home);
-      sb.append(pythonpath);
+      if (pyCode.length > 0 && dOut != null) {
+        dOut.writeInt(pyCode.length);
+        LOGGER.info("length of code buffer " + pyCode.length);
 
-      getPyCode(sb.toString());
-      Startworker(sb.toString());
-      if (clientSock != null) {
-        LOGGER.info("successfully launched worker");
+        dOut.write(pyCode);
 
-        dOut = new DataOutputStream(clientSock.getOutputStream());
-        dIn = new DataInputStream(clientSock.getInputStream());
-
-        // write code to the client socket
-
-        if (pyCode.length > 0 && dOut != null) {
-          dOut.writeInt(pyCode.length);
-          LOGGER.info("length of code buffer " + pyCode.length);
-
-          dOut.write(pyCode);
-
-          dOut.flush();
-          LOGGER.info("wrote and flushed code snippet ");
-
-        } else {
-          LOGGER.info("something is very wrong, python code  or output stream are empty");
-        }
+        dOut.flush();
+        LOGGER.info("wrote and flushed code snippet ");
 
       } else {
-        LOGGER.info("could not launch worker");
+        LOGGER.info("something is very wrong, python code  or output stream are empty");
       }
 
     } catch (IOException e) {
       LOGGER.info("Exception Initializing Python process on worker");
     }
-  }
-
-  private void getPyCode(final String pythonExecPath) throws UnknownHostException, IOException {
-    try {
-
-      ServerSocket tmpSSocket = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
-
-      int a = tmpSSocket.getLocalPort();
-      LOGGER.info("created temp Sock for reading code socket " + a);
-
-      ProcessBuilder pb = new ProcessBuilder(MyriaConstants.DEFAULT_PYTHONPATH, "-m", filename);
-      final Map<String, String> env = pb.environment();
-
-      String path = env.get("PATH");
-      StringBuilder sb = new StringBuilder();
-      sb.append(pythonExecPath);
-      sb.append(":");
-      sb.append(path);
-      env.put("PATH", sb.toString());
-      // String pythonPath = createPythonPath(env.get(MyriaConstants.PYTHONPATH), pythonModulePath);
-      // env.put(MyriaConstants.PYTHONPATH, pythonPath);
-
-      // Set<String> keys = env.keySet();
-      // for (String string : keys) {
-      // String key = string;
-      // String value = env.get(key);
-      //
-      // LOGGER.info("system var key :" + key);
-      // LOGGER.info("value of sys var:" + value);
-      // }
-
-      pb.redirectError(Redirect.INHERIT);
-      pb.redirectOutput(Redirect.INHERIT);
-      // write the env variables to the path of the starting process
-      Process codeReader = pb.start();
-
-      OutputStream stdin = codeReader.getOutputStream();
-      OutputStreamWriter out = new OutputStreamWriter(stdin, StandardCharsets.UTF_8);
-
-      out.write(tmpSSocket.getLocalPort() + "\n");
-      out.flush();
-      Socket tmpClientSock = tmpSSocket.accept();
-      setCode(tmpClientSock);
-
-      // LOGGER.info("read code now closing sockets");
-
-      if (tmpClientSock != null) {
-        tmpClientSock.close();
-      }
-
-      if (tmpSSocket != null) {
-        tmpSSocket.close();
-      }
-      if (codeReader != null) {
-        codeReader.destroy();
-      }
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return;
   }
 
   private void setCode(final Socket codeSock) {
@@ -310,6 +311,7 @@ public class PyUDF extends UnaryOperator {
 
     } catch (IOException e) {
       // TODO Auto-generated catch block
+      LOGGER.info(e.getMessage());
       e.printStackTrace();
     }
   }
