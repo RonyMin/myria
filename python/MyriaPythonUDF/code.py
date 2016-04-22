@@ -41,15 +41,15 @@ if __name__ == '__main__':
       mask = dt[1]
       sigma = estimate_sigma(image)
       denoised_data = nlmeans.nlmeans(image, sigma=sigma, mask=mask)
-      print "finished denoising"
-      return denoised_data.shape
+      #print "finished denoising"
+      return denoised_data
         #yield denoised_data
 
 
 
   ser = CloudPickleSerializer()
   #x = ser.dumps(foo)
-  ser._write_with_length(foo,outfile)
+  ser.write_with_length(foo,outfile)
   #x = cloud.serialization.cloudpickle.dumps(foo)
 
 

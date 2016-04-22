@@ -25,26 +25,23 @@ def main(infile, outfile):
 
         #first thing an iterator writes is the number of items in a tuple
         #to be passed to the function
-
         tuplesize = read_int(infile)
         if tuplesize < 1:
             raise ValueError("size of tuple should not be less than 1 ")
 
-        i = 1
-
+        i=1
         while True:
             #iterator = pickleSer.load_stream(infile, tuplesize)
             #pickleSer.dump_stream(func(iterator),outfile)
-            print("Starting to read tuple", file=sys.stdout)
-            print (str(i), file=sys.stdout)
-            tup =pickleSer._read_with_length(infile,tuplesize)
+            print ("tuple number"+str(i), file=sys.stdout)
+            tup =pickleSer.read_with_length(infile,tuplesize)
             print ("Read tuple", file=sys.stdout)
             result = func(tup)
-            print ("got results back", file=sys.stdout)
-            pickleSer._write_with_length(result,outfile)
+            #print ("got results back", file=sys.stdout)
+            pickleSer.write_with_length(result,outfile)
             print ("wrote results back", file=sys.stdout)
-            i=i+1
-            #outfile.flush()
+            i = i+1
+            outfile.flush()
 
 
     except Exception:

@@ -106,11 +106,15 @@ public class PyUDF extends UnaryOperator {
       for (int i = 0; i < rows; i++) {
         // write to stream
         try {
+          // then write all the tuples to the stream in this batch
           writeToStream(tb, i);
-          LOGGER.info("wrote to the stream");
+          LOGGER.info("wrote tuple to stream");
+          // temporarily write crap back
+          // sendErrorbuffer(output);
+          // LOGGER.info("wrote to the stream");
 
-          readFromStream(tb, i, output);
-          LOGGER.info("successfully read from the stream");
+          readFromStream(output);
+          // LOGGER.info("successfully read from the stream");
         } catch (DbException e) {
           LOGGER.info("Error writing to python stream" + e.getMessage());
           sendErrorbuffer(output);
@@ -124,7 +128,7 @@ public class PyUDF extends UnaryOperator {
 
   }
 
-  private void readFromStream(final TupleBatch tb, final int row, final TupleBatchBuffer output) throws DbException {
+  private void readFromStream(final TupleBatchBuffer output) throws DbException {
     int length = 0;
 
     try {
@@ -132,19 +136,15 @@ public class PyUDF extends UnaryOperator {
       length = dIn.readInt(); // read length of incoming message
       LOGGER.info("length of message to be read from python process " + length);
       switch (length) {
-
         case -2:
           int excepLength = dIn.readInt();
           byte[] excp = new byte[excepLength];
           dIn.readFully(excp);
           throw new DbException(new String(excp));
-        case -3:
-          LOGGER.info("end of stream");
-          break;
 
         default:
           if (length > 0) {
-            LOGGER.info("lenght >0");
+            LOGGER.info("length >0");
             byte[] obj = new byte[length];
             dIn.readFully(obj);
             output.putByteBuffer(0, ByteBuffer.wrap(obj));
@@ -272,7 +272,6 @@ public class PyUDF extends UnaryOperator {
     Preconditions.checkNotNull(filename);
     // start worker
     try {
-
       createServerSock();
 
       getPyCode();
@@ -283,6 +282,7 @@ public class PyUDF extends UnaryOperator {
         LOGGER.info("length of code buffer " + pyCode.length);
 
         dOut.write(pyCode);
+        dOut.writeInt(columnIdx.length);
 
         dOut.flush();
         LOGGER.info("wrote and flushed code snippet ");
@@ -351,18 +351,12 @@ public class PyUDF extends UnaryOperator {
     List<? extends Column<?>> inputColumns = tb.getDataColumns();
 
     if (columnIdx.length > 0) {
-      // LOGGER.info("columns to write: " + columnIdx.length);
+
       try {
-        // first write the number of columns being sent to the stream
-        // dOut.writeInt(Integer.SIZE / Byte.SIZE);
-        dOut.writeInt(columnIdx.length);
-        // LOGGER.info("wrote number of columns to stream");
 
         for (int element : columnIdx) {
-          // LOGGER.info("column number " + element);
 
           Type type = inputColumns.get(element).getType();
-          // LOGGER.info("type: " + type.getName());
           switch (type) {
             case BOOLEAN_TYPE:
               dOut.writeInt(Integer.SIZE / Byte.SIZE);
@@ -395,12 +389,15 @@ public class PyUDF extends UnaryOperator {
               break;
             case BYTES_TYPE:
               ByteBuffer input = inputColumns.get(element).getByteBuffer(row);
+              // byte[] b = "empty".getBytes();
               LOGGER.info("about to write to stream, length of buffer " + input.array().length);
               dOut.writeInt(input.array().length);
+              // dOut.writeInt(b.length);
               // LOGGER.info("length of stream " + dOut.size());
-              LOGGER.info("length of buffer " + input.array().length);
+              // LOGGER.info("length of buffer " + input.array().length);
               dOut.write(input.array());
-              LOGGER.info("wrote buffer to stream");
+              // dOut.write(b);
+              LOGGER.info("wrote buffer to stream, buffer length" + input.array().length);
               break;
           }
           dOut.flush();
