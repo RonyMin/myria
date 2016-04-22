@@ -39,9 +39,9 @@ class PickleSerializer(object):
           raise ValueError("can not serialize object larger than 2G")
 
       write_int(len(serialized), stream)
-      print("wrote int"+ str(len(serialized)))
+      #print("wrote int"+ str(len(serialized)))
       stream.write(serialized)
-      print("wrote the serialized object back")
+      #print("wrote the serialized object back")
 
   def _read_test(self,stream, size):
 
@@ -62,7 +62,7 @@ class PickleSerializer(object):
       #print("tuple size: "+ str(size))
       for i in range (size):
           length = read_int(stream)
-          print(str(length))
+          #print(str(length))
           if length == SpecialLengths.END_OF_DATA_SECTION:
               raise EOFError
           elif length ==SpecialLengths.NULL:

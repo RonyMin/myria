@@ -108,7 +108,7 @@ public class PyUDF extends UnaryOperator {
         try {
           // then write all the tuples to the stream in this batch
           writeToStream(tb, i);
-          LOGGER.info("wrote tuple to stream");
+          // LOGGER.info("wrote tuple to stream");
           // temporarily write crap back
           // sendErrorbuffer(output);
           // LOGGER.info("wrote to the stream");
@@ -132,9 +132,9 @@ public class PyUDF extends UnaryOperator {
     int length = 0;
 
     try {
-      LOGGER.info("starting to read int from python process ");
+      // LOGGER.info("starting to read int from python process ");
       length = dIn.readInt(); // read length of incoming message
-      LOGGER.info("length of message to be read from python process " + length);
+      // LOGGER.info("length of message to be read from python process " + length);
       switch (length) {
         case -2:
           int excepLength = dIn.readInt();
@@ -144,11 +144,11 @@ public class PyUDF extends UnaryOperator {
 
         default:
           if (length > 0) {
-            LOGGER.info("length >0");
+            // LOGGER.info("length > 0");
             byte[] obj = new byte[length];
             dIn.readFully(obj);
             output.putByteBuffer(0, ByteBuffer.wrap(obj));
-            LOGGER.info("read bytes from python process " + length);
+            // LOGGER.info("read bytes from python process " + length);
           }
           break;
 
@@ -249,7 +249,7 @@ public class PyUDF extends UnaryOperator {
     out.write(serverSocket.getLocalPort() + "\n");
     out.flush();
     clientSock = serverSocket.accept();
-    LOGGER.info("successfully launched worker");
+    // LOGGER.info("successfully launched worker");
     setupStreams();
 
     return;
@@ -260,7 +260,7 @@ public class PyUDF extends UnaryOperator {
     if (clientSock != null) {
       dOut = new DataOutputStream(clientSock.getOutputStream());
       dIn = new DataInputStream(clientSock.getInputStream());
-      LOGGER.info("successfully setup streams");
+      // LOGGER.info("successfully setup streams");
     }
 
   }
@@ -279,13 +279,13 @@ public class PyUDF extends UnaryOperator {
 
       if (pyCode.length > 0 && dOut != null) {
         dOut.writeInt(pyCode.length);
-        LOGGER.info("length of code buffer " + pyCode.length);
+        // LOGGER.info("length of code buffer " + pyCode.length);
 
         dOut.write(pyCode);
         dOut.writeInt(columnIdx.length);
 
         dOut.flush();
-        LOGGER.info("wrote and flushed code snippet ");
+        // LOGGER.info("wrote and flushed code snippet ");
 
       } else {
         LOGGER.info("something is very wrong, python code  or output stream are empty");
@@ -390,18 +390,18 @@ public class PyUDF extends UnaryOperator {
             case BYTES_TYPE:
               ByteBuffer input = inputColumns.get(element).getByteBuffer(row);
               // byte[] b = "empty".getBytes();
-              LOGGER.info("about to write to stream, length of buffer " + input.array().length);
+              // LOGGER.info("about to write to stream, length of buffer " + input.array().length);
               dOut.writeInt(input.array().length);
               // dOut.writeInt(b.length);
               // LOGGER.info("length of stream " + dOut.size());
               // LOGGER.info("length of buffer " + input.array().length);
               dOut.write(input.array());
               // dOut.write(b);
-              LOGGER.info("wrote buffer to stream, buffer length" + input.array().length);
+              // LOGGER.info("wrote buffer to stream, buffer length" + input.array().length);
               break;
           }
           dOut.flush();
-          LOGGER.info("flushed output buffer ");
+          // LOGGER.info("flushed output buffer ");
 
         }
 

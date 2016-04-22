@@ -34,7 +34,7 @@ if __name__ == '__main__':
       import  numpy as np
       from dipy.denoise import nlmeans
       from dipy.denoise.noise_estimate import estimate_sigma
-      print "called!"
+      #print "called!"
       #while True:
         #dt = x.next()
       image = dt[0]

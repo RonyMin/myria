@@ -33,13 +33,13 @@ def main(infile, outfile):
         while True:
             #iterator = pickleSer.load_stream(infile, tuplesize)
             #pickleSer.dump_stream(func(iterator),outfile)
-            print ("tuple number"+str(i), file=sys.stdout)
+            #print ("tuple number"+str(i), file=sys.stdout)
             tup =pickleSer.read_with_length(infile,tuplesize)
-            print ("Read tuple", file=sys.stdout)
+            #print ("Read tuple", file=sys.stdout)
             result = func(tup)
             #print ("got results back", file=sys.stdout)
             pickleSer.write_with_length(result,outfile)
-            print ("wrote results back", file=sys.stdout)
+            #print ("wrote results back", file=sys.stdout)
             i = i+1
             outfile.flush()
 
