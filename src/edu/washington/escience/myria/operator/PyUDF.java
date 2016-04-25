@@ -74,7 +74,7 @@ public class PyUDF extends UnaryOperator {
       // setup python path
       StringBuilder sb = new StringBuilder();
       sb.append(System.getenv("HOME"));
-      sb.append("/anaconda/bin");
+      sb.append("/anaconda2/bin");
       pythonPath = sb.toString();
 
     }
@@ -114,7 +114,7 @@ public class PyUDF extends UnaryOperator {
           // LOGGER.info("wrote to the stream");
 
           readFromStream(output);
-          // LOGGER.info("successfully read from the stream");
+          LOGGER.info("successfully read from the stream");
         } catch (DbException e) {
           LOGGER.info("Error writing to python stream" + e.getMessage());
           sendErrorbuffer(output);
@@ -177,7 +177,7 @@ public class PyUDF extends UnaryOperator {
 
   }
 
-  private void getPyCode() throws IOException {
+  private void getPyCode() throws IOException, DbException {
     // this function creates a py process
     // connects to this server socket
     // uses the client socket to gets the py code
@@ -235,7 +235,7 @@ public class PyUDF extends UnaryOperator {
     env.put("PATH", sb.toString());
 
     // String pythonPath = createPythonPath(env.get(MyriaConstants.PYTHONPATH), pythonModulePath);
-    env.put("PYTHONUNBUFFERED", "YES");
+    // env.put("PYTHONUNBUFFERED", "YES");
 
     pb.redirectError(Redirect.INHERIT);
     pb.redirectOutput(Redirect.INHERIT);
@@ -249,7 +249,7 @@ public class PyUDF extends UnaryOperator {
     out.write(serverSocket.getLocalPort() + "\n");
     out.flush();
     clientSock = serverSocket.accept();
-    // LOGGER.info("successfully launched worker");
+    LOGGER.info("successfully launched worker");
     setupStreams();
 
     return;
@@ -260,7 +260,7 @@ public class PyUDF extends UnaryOperator {
     if (clientSock != null) {
       dOut = new DataOutputStream(clientSock.getOutputStream());
       dIn = new DataInputStream(clientSock.getInputStream());
-      // LOGGER.info("successfully setup streams");
+      LOGGER.info("successfully setup streams");
     }
 
   }
@@ -293,10 +293,11 @@ public class PyUDF extends UnaryOperator {
 
     } catch (IOException e) {
       LOGGER.info("Exception Initializing Python process on worker");
+      throw new DbException(e);
     }
   }
 
-  private void setCode(final Socket codeSock) {
+  private void setCode(final Socket codeSock) throws DbException {
     try {
       // DataOutputStream tOut = new DataOutputStream(codeSock.getOutputStream());
       DataInputStream tIn = new DataInputStream(codeSock.getInputStream());
@@ -311,8 +312,8 @@ public class PyUDF extends UnaryOperator {
 
     } catch (IOException e) {
       // TODO Auto-generated catch block
-      LOGGER.info(e.getMessage());
-      e.printStackTrace();
+      // LOGGER.info(e.getMessage());
+      throw new DbException(e);
     }
   }
 
@@ -324,7 +325,7 @@ public class PyUDF extends UnaryOperator {
   @Override
   protected void cleanup() throws Exception {
 
-    LOGGER.info("Operator cleanup : closing the server and client sockets.");
+    // LOGGER.info("Operator cleanup : closing the server and client sockets.");
     // stop the writer thread
 
     // close sockets after operator is done.
@@ -385,7 +386,7 @@ public class PyUDF extends UnaryOperator {
               dOut.writeChars(sb.toString());
               break;
             case DATETIME_TYPE:
-              LOGGER.info("date time not yet supported for python UDF ");
+              // LOGGER.info("date time not yet supported for python UDF ");
               break;
             case BYTES_TYPE:
               ByteBuffer input = inputColumns.get(element).getByteBuffer(row);
@@ -406,7 +407,7 @@ public class PyUDF extends UnaryOperator {
         }
 
       } catch (IOException e) {
-        // LOGGER.info("IOException when writing to python process stream");
+        LOGGER.info("IOException when writing to python process stream");
         throw new DbException(e);
       }
 
