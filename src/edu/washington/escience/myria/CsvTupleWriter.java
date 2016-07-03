@@ -1,10 +1,15 @@
 package edu.washington.escience.myria;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -56,9 +61,19 @@ public class CsvTupleWriter implements TupleWriter {
   @Override
   public void writeTuples(final ReadableTable tuples) throws IOException {
     final String[] row = new String[tuples.numColumns()];
+    Schema tbsc = tuples.getSchema();
     /* Serialize every row into the output stream. */
     for (int i = 0; i < tuples.numTuples(); ++i) {
       for (int j = 0; j < tuples.numColumns(); ++j) {
+        Type type = tbsc.getColumnType(j);
+        if (type.equals(Type.BYTES_TYPE)) {
+          String filename = UUID.randomUUID().toString();
+          ByteBuffer bb = tuples.getByteBuffer(j, i);
+          writeBBtoFile(bb, filename);// write the file out
+          row[j] = filename;// add filename to the csv file
+        } else {
+          row[j] = tuples.getObject(j, i).toString();
+        }
         row[j] = tuples.getObject(j, i).toString();
       }
       csvPrinter.printRecord((Object[]) row);
@@ -78,5 +93,14 @@ public class CsvTupleWriter implements TupleWriter {
     } finally {
       csvPrinter.close();
     }
+  }
+
+  private void writeBBtoFile(final ByteBuffer bb, final String fn) throws IOException {
+    boolean append = false;
+    File file = new File(fn);
+    FileChannel wChannel = new FileOutputStream(file, append).getChannel();
+    wChannel.write(bb);
+    wChannel.close();
+
   }
 }

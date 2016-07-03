@@ -584,6 +584,16 @@ public final class JdbcAccessMethod extends AccessMethod {
     execute(statement);
   }
 
+  @Override
+  public void executeSQLCommand(final String command) throws DbException {
+    if (jdbcInfo.getDbms().equals(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL)) {
+      execute(command);
+    } else {
+      throw new UnsupportedOperationException("run sql command is not supported in " + jdbcInfo.getDbms()
+          + ", implement me");
+    }
+  }
+
   /**
    * Returns the quoted name of the given relation for use in SQL statements.
    *

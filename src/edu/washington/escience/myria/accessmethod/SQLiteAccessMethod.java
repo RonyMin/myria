@@ -464,4 +464,9 @@ public final class SQLiteAccessMethod extends AccessMethod {
       throws DbException {
     throw new UnsupportedOperationException("create index if not exists is not supported in sqlite yet, implement me");
   }
+
+  @Override
+  public void executeSQLCommand(final String command) throws DbException {
+    throw new UnsupportedOperationException("execute sql command is not supported in sqlite yet, implement me");
+  }
 }
