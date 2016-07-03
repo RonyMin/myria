@@ -58,6 +58,7 @@ import edu.washington.escience.myria.expression.evaluate.ExpressionOperatorParam
   @Type(name = "PLUS", value = PlusExpression.class),
   @Type(name = "POW", value = PowExpression.class),
   @Type(name = "TIMES", value = TimesExpression.class),
+  @Type(name = "PYUDF", value = PyUDFExpression.class),
   /* Nary */
   @Type(name = "CONDITION", value = ConditionalExpression.class),
   @Type(name = "SUBSTR", value = SubstrExpression.class)

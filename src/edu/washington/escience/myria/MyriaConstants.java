@@ -290,4 +290,30 @@ public final class MyriaConstants {
     /** Python UDF */
     PYTHON
   };
+  public static enum PythonType {
+    INT(1), LONG(2), FLOAT(3), DOUBLE(4), BYTES(5);
+    private int val;
+
+    PythonType(final int val) {
+      this.val = val;
+
+    }
+
+    public int getVal() {
+      return val;
+    }
+  }
+
+  /**
+   * + * python executable name +
+   */
+  public static final String PYTHONEXEC = "python";
+  /*
+   * Python worker module
+   */
+  public static final String PYTHONWORKER = "MyriaPythonWorker.worker";
+  /**
+   * python module discovery env variable
+   */
+  public static final String PYTHONPATH = "/anaconda/bin";
 }
