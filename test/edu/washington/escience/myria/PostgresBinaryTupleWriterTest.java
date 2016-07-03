@@ -3,6 +3,7 @@ package edu.washington.escience.myria;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,16 +26,8 @@ public class PostgresBinaryTupleWriterTest {
     writer.open(out);
 
     TupleBuffer tuples =
-        new TupleBuffer(
-            new Schema(
-                ImmutableList.of(
-                    Type.BOOLEAN_TYPE,
-                    Type.INT_TYPE,
-                    Type.LONG_TYPE,
-                    Type.FLOAT_TYPE,
-                    Type.DOUBLE_TYPE,
-                    Type.STRING_TYPE,
-                    Type.DATETIME_TYPE)));
+        new TupleBuffer(new Schema(ImmutableList.of(Type.BOOLEAN_TYPE, Type.INT_TYPE, Type.LONG_TYPE, Type.FLOAT_TYPE,
+            Type.DOUBLE_TYPE, Type.STRING_TYPE, Type.DATETIME_TYPE, Type.BYTES_TYPE)));
 
     tuples.putBoolean(0, true);
     tuples.putInt(1, 1);
@@ -43,6 +36,7 @@ public class PostgresBinaryTupleWriterTest {
     tuples.putDouble(4, 3.14);
     tuples.putString(5, "one");
     tuples.putDateTime(6, new DateTime(1990, 7, 18, 2, 3, 10));
+    tuples.putByteBuffer(7, ByteBuffer.wrap(new String("ByteArray one").getBytes()));
 
     tuples.putBoolean(0, false);
     tuples.putInt(1, 2);
@@ -51,6 +45,7 @@ public class PostgresBinaryTupleWriterTest {
     tuples.putDouble(4, -3.14);
     tuples.putString(5, "two");
     tuples.putDateTime(6, new DateTime(2013, 9, 30, 3, 1, 10));
+    tuples.putByteBuffer(7, ByteBuffer.wrap(new String("ByteArray two").getBytes()));
 
     tuples.putBoolean(0, true);
     tuples.putInt(1, 3);
@@ -59,6 +54,7 @@ public class PostgresBinaryTupleWriterTest {
     tuples.putDouble(4, 123.456);
     tuples.putString(5, "three");
     tuples.putDateTime(6, new DateTime(2000, 1, 1, 0, 0, 0));
+    tuples.putByteBuffer(7, ByteBuffer.wrap(new String("ByteArray three").getBytes()));
 
     writer.writeTuples(tuples);
     writer.done();
@@ -67,12 +63,12 @@ public class PostgresBinaryTupleWriterTest {
 
     /*
      * // generate file:
-     *
+     * 
      * create table foo(a bool, b int, c bigint, d real, e double precision, f text, g timestamp);
-     *
+     * 
      * insert into foo values (true, 1, 100, 3.14, 3.14, 'one', '1990-07-18 02:03:10'), (false, 2, 200, 3.14, -3.14,
      * 'two', '2013-09-30 03:01:10'), (true, 3, 300, 3.14, 123.456, 'three', '2000-01-01 00:00:00');
-     *
+     * 
      * copy foo to '/private/tmp/pg.bin' with binary;
      */
 

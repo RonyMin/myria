@@ -1,6 +1,7 @@
 package edu.washington.escience.myria.column.builder;
 
 import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -20,8 +21,8 @@ import edu.washington.escience.myria.storage.ReplaceableColumn;
  * @param <T> type of the objects in this column.
  *
  */
-public abstract class ColumnBuilder<T extends Comparable<?>>
-    implements ReadableColumn, WritableColumn, ReplaceableColumn {
+public abstract class ColumnBuilder<T extends Comparable<?>> implements ReadableColumn, WritableColumn,
+    ReplaceableColumn {
 
   @Override
   public ColumnBuilder<T> appendBoolean(final boolean value) throws BufferOverflowException {
@@ -40,6 +41,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>>
 
   @Override
   public DateTime getDateTime(final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
+  public ByteBuffer getByteBuffer(final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
 
@@ -93,6 +99,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>>
     throw new UnsupportedOperationException(getClass().getName());
   }
 
+  @Override
+  public ColumnBuilder<T> appendByteBuffer(final ByteBuffer value) throws BufferOverflowException {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
   /**
    * Extracts the appropriate value from a JDBC ResultSet object and appends it to this column.
    *
@@ -102,8 +113,8 @@ public abstract class ColumnBuilder<T extends Comparable<?>>
    * @throws SQLException if there are JDBC errors.
    * @throws BufferOverflowException if the column is already full
    */
-  public abstract ColumnBuilder<T> appendFromJdbc(ResultSet resultSet, int jdbcIndex)
-      throws SQLException, BufferOverflowException;
+  public abstract ColumnBuilder<T> appendFromJdbc(ResultSet resultSet, int jdbcIndex) throws SQLException,
+      BufferOverflowException;
 
   /**
    * Extracts the appropriate value from a SQLiteStatement object and appends it to this column.
@@ -114,8 +125,8 @@ public abstract class ColumnBuilder<T extends Comparable<?>>
    * @throws SQLiteException if there are SQLite errors.
    * @throws BufferOverflowException if the column is already full
    */
-  public abstract ColumnBuilder<T> appendFromSQLite(SQLiteStatement statement, int index)
-      throws SQLiteException, BufferOverflowException;
+  public abstract ColumnBuilder<T> appendFromSQLite(SQLiteStatement statement, int index) throws SQLiteException,
+      BufferOverflowException;
 
   /**
    * @return a column with the contents built.
@@ -155,6 +166,11 @@ public abstract class ColumnBuilder<T extends Comparable<?>>
 
   @Override
   public void replaceDateTime(@Nonnull final DateTime value, final int row) {
+    throw new UnsupportedOperationException(getClass().getName());
+  }
+
+  @Override
+  public void replaceByteBuffer(@Nonnull final ByteBuffer value, final int row) {
     throw new UnsupportedOperationException(getClass().getName());
   }
 

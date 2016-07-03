@@ -1,5 +1,7 @@
 package edu.washington.escience.myria.storage;
 
+import java.nio.ByteBuffer;
+
 import javax.annotation.Nonnull;
 
 import org.joda.time.DateTime;
@@ -62,6 +64,15 @@ public interface ReadableColumn extends ColumnInterface {
    * @throws UnsupportedOperationException if this column does not support this type.
    */
   long getLong(final int row);
+
+  /**
+   * Returns the long value at the specified row in this column.
+   *
+   * @param row row of element to return.
+   * @return the element at the specified row in this column.
+   * @throws UnsupportedOperationException if this column does not support this type.
+   */
+  ByteBuffer getByteBuffer(int row);
 
   /**
    * Returns the element at the specified row in this column.
