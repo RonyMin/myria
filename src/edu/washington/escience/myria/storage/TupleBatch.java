@@ -31,7 +31,7 @@ public class TupleBatch implements ReadableTable, Serializable {
   /** Required for Java serialization. */
   private static final long serialVersionUID = 1L;
   /** The hard-coded number of tuples in a batch. */
-  public static final int BATCH_SIZE = 10 * 1000;
+  public static final int BATCH_SIZE = 1;// 10 * 1000;
   /** Schema of tuples in this batch. */
   private final Schema schema;
   /** Tuple data stored as columns in this batch. */
