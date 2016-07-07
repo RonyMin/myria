@@ -45,7 +45,11 @@ public class PythonWorker {
    */
   public PythonWorker() throws DbException {
     StringBuilder sb = new StringBuilder();
-    sb.append(System.getenv("HOME"));
+    String s = System.getenv("HOME");
+    if (s.endsWith("/")) {
+      s = s.substring(0, s.length() - 1);
+    }
+    sb.append(s);
     sb.append(MyriaConstants.PYTHONPATH);
     pythonPath = sb.toString();
     LOGGER.info(sb.toString());
