@@ -216,6 +216,7 @@ public class PythonUDFEvaluator extends GenericEvaluator {
   private Object evaluatePython(final ReadableTable tb, final int rowIdx, final ReadableTable state) throws DbException {
     LOGGER.info("eval called!");
     if (pyWorker == null) {
+      LOGGER.info("need to init pyworker");
       pyWorker = new PythonWorker();
       initEvaluator();
     }
@@ -297,6 +298,7 @@ public class PythonUDFEvaluator extends GenericEvaluator {
             LOGGER.info("length greater than zero!");
             obj = new byte[l];
             dIn.readFully((byte[]) obj);
+
           }
         }
 
