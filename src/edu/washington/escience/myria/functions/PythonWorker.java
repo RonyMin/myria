@@ -48,6 +48,7 @@ public class PythonWorker {
     sb.append(System.getenv("HOME"));
     sb.append(MyriaConstants.PYTHONPATH);
     pythonPath = sb.toString();
+    LOGGER.info(sb.toString());
 
     try {
       createServerSocket();
@@ -129,7 +130,7 @@ public class PythonWorker {
     sb.append(env.get("PATH"));
     env.put("PATH", sb.toString());
     env.put("PYTHONUNBUFFERED", "YES");
-
+    LOGGER.info("Python path: " + sb.toString());
     pb.redirectError(Redirect.INHERIT);
     pb.redirectOutput(Redirect.INHERIT);
 
