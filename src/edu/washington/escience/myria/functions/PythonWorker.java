@@ -36,8 +36,6 @@ public class PythonWorker {
   private DataOutputStream dOut;
   private DataInputStream dIn;
 
-  // private final String pythonPath;
-
   /**
    * 
    * @param child child operator that data is fetched from
@@ -45,15 +43,6 @@ public class PythonWorker {
    * @throws DbException
    */
   public PythonWorker() throws DbException {
-    // StringBuilder sb = new StringBuilder();
-    // String s = System.getenv("HOME");
-    // if (s.endsWith("/")) {
-    // s = s.substring(0, s.length() - 1);
-    // }
-    // sb.append(s);
-    // sb.append(MyriaConstants.PYTHONPATH);
-    // pythonPath = sb.toString();
-    // LOGGER.info(sb.toString());
 
     try {
       createServerSocket();
@@ -129,19 +118,13 @@ public class PythonWorker {
     ProcessBuilder pb = new ProcessBuilder(MyriaConstants.PYTHONEXEC, "-m", pythonWorker);
     final Map<String, String> env = pb.environment();
 
-    // StringBuilder sb = new StringBuilder();
-    // sb.append(pythonPath);
-    // sb.append(":");
-    // sb.append(env.get("PATH"));
-    // env.put("PATH", sb.toString());
     env.put("PYTHONUNBUFFERED", "YES");
-    // LOGGER.info("Python path: " + sb.toString());
     pb.redirectError(Redirect.INHERIT);
     pb.redirectOutput(Redirect.INHERIT);
 
     // write the env variables to the path of the starting process
     worker = pb.start();
-    // LOGGER.info("Started the python process");
+
     OutputStream stdin = worker.getOutputStream();
     OutputStreamWriter out = new OutputStreamWriter(stdin, StandardCharsets.UTF_8);
 

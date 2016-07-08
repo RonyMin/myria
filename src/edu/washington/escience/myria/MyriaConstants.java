@@ -305,15 +305,13 @@ public final class MyriaConstants {
   }
 
   /**
-   * + * python executable name +
+   * python executable name
    */
+
   public static final String PYTHONEXEC = "python";
   /*
    * Python worker module
    */
   public static final String PYTHONWORKER = "MyriaPythonWorker.worker";
-  /**
-   * python module discovery env variable
-   */
-  public static final String PYTHONPATH = "/anaconda/bin";
+
 }
