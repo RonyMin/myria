@@ -69,8 +69,8 @@ public class CsvTupleWriter implements TupleWriter {
         if (type.equals(Type.BYTES_TYPE)) {
           String filename = UUID.randomUUID().toString();
           ByteBuffer bb = tuples.getByteBuffer(j, i);
-          writeBBtoFile(bb, filename);// write the file out
-          row[j] = filename;// add filename to the csv file
+          writeBBtoFile(bb, filename); // write the file out
+          row[j] = filename; // add filename to the csv file
         } else {
           row[j] = tuples.getObject(j, i).toString();
         }
@@ -101,6 +101,5 @@ public class CsvTupleWriter implements TupleWriter {
     FileChannel wChannel = new FileOutputStream(file, append).getChannel();
     wChannel.write(bb);
     wChannel.close();
-
   }
 }

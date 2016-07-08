@@ -29,7 +29,8 @@ import edu.washington.escience.myria.storage.TupleBatch;
 public class GenericEvaluator extends Evaluator {
 
   /** logger for this class. */
-  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(GenericEvaluator.class);
+  private static final org.slf4j.Logger LOGGER =
+      org.slf4j.LoggerFactory.getLogger(GenericEvaluator.class);
 
   /**
    * Expression evaluator.
@@ -42,7 +43,8 @@ public class GenericEvaluator extends Evaluator {
    * @param expression the expression for the evaluator
    * @param parameters parameters that are passed to the expression
    */
-  public GenericEvaluator(final Expression expression, final ExpressionOperatorParameter parameters) {
+  public GenericEvaluator(
+      final Expression expression, final ExpressionOperatorParameter parameters) {
     super(expression, parameters);
   }
 
@@ -53,7 +55,8 @@ public class GenericEvaluator extends Evaluator {
    */
   @Override
   public void compile() throws DbException {
-    Preconditions.checkArgument(needsCompiling() || (getStateSchema() != null),
+    Preconditions.checkArgument(
+        needsCompiling() || (getStateSchema() != null),
         "This expression does not need to be compiled.");
 
     String javaExpression = getJavaExpressionWithAppend();
@@ -70,8 +73,13 @@ public class GenericEvaluator extends Evaluator {
 
     try {
       evaluator =
-          (ExpressionEvalInterface) se.createFastEvaluator(javaExpression, ExpressionEvalInterface.class, new String[] {
-              Expression.TB, Expression.ROW, Expression.RESULT, Expression.STATE });
+          (ExpressionEvalInterface)
+              se.createFastEvaluator(
+                  javaExpression,
+                  ExpressionEvalInterface.class,
+                  new String[] {
+                    Expression.TB, Expression.ROW, Expression.RESULT, Expression.STATE
+                  });
     } catch (CompileException e) {
       LOGGER.error("Error when compiling expression {}: {}", javaExpression, e);
       throw new DbException("Error when compiling expression: " + javaExpression, e);
@@ -89,10 +97,14 @@ public class GenericEvaluator extends Evaluator {
    * @throws InvocationTargetException exception thrown from janino
    * @throws DbException
    */
-  public void eval(final ReadableTable tb, final int rowIdx, final WritableColumn result, final ReadableTable state)
+  public void eval(
+      final ReadableTable tb,
+      final int rowIdx,
+      final WritableColumn result,
+      final ReadableTable state)
       throws InvocationTargetException, DbException {
-    Preconditions.checkArgument(evaluator != null,
-        "Call compile first or copy the data if it is the same in the input.");
+    Preconditions.checkArgument(
+        evaluator != null, "Call compile first or copy the data if it is the same in the input.");
     try {
       evaluator.evaluate(tb, rowIdx, result, state);
     } catch (Exception e) {
@@ -118,7 +130,8 @@ public class GenericEvaluator extends Evaluator {
    * @throws InvocationTargetException exception thrown from janino
    * @throws DbException
    */
-  public Column<?> evaluateColumn(final TupleBatch tb) throws InvocationTargetException, DbException {
+  public Column<?> evaluateColumn(final TupleBatch tb)
+      throws InvocationTargetException, DbException {
     ExpressionOperator op = getExpression().getRootExpressionOperator();
     /* This expression just copies an input column. */
     if (isCopyFromInput()) {

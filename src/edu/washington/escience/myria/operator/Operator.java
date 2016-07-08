@@ -115,15 +115,17 @@ public abstract class Operator implements Serializable {
   public PythonFunctionRegistrar getPythonFunctionRegistrar() {
 
     return pyFuncReg;
-
   }
 
   /**
    * @return return subquery id.
    */
   public SubQueryId getSubQueryId() {
-    return ((LocalFragmentResourceManager) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER))
-        .getFragment().getLocalSubQuery().getSubQueryId();
+    return ((LocalFragmentResourceManager)
+            execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER))
+        .getFragment()
+        .getLocalSubQuery()
+        .getSubQueryId();
   }
 
   /**
@@ -145,7 +147,8 @@ public abstract class Operator implements Serializable {
     if (execEnvVars == null) {
       return null;
     } else {
-      return ((LocalFragmentResourceManager) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER))
+      return ((LocalFragmentResourceManager)
+              execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER))
           .getFragment();
     }
   }
@@ -181,7 +184,8 @@ public abstract class Operator implements Serializable {
     }
     if (profilingMode == null) {
       LocalFragmentResourceManager lfrm =
-          (LocalFragmentResourceManager) execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER);
+          (LocalFragmentResourceManager)
+              execEnvVars.get(MyriaConstants.EXEC_ENV_VAR_FRAGMENT_RESOURCE_MANAGER);
       if (lfrm == null) {
         return ImmutableSet.of();
       }
@@ -203,7 +207,11 @@ public abstract class Operator implements Serializable {
     // Ensures that a future call to next() or nextReady() will fail
     // outputBuffer = null;
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Operator {} closed, #output TBs: {}, # output tuples: {}", this, numOutputTBs, numOutputTuples);
+      LOGGER.debug(
+          "Operator {} closed, #output TBs: {}, # output tuples: {}",
+          this,
+          numOutputTBs,
+          numOutputTuples);
     }
     open = false;
     eos = true;
@@ -452,16 +460,14 @@ public abstract class Operator implements Serializable {
    * @param execEnvVars execution environment variables
    * @throws Exception if any error occurs
    */
-  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {
-  };
+  protected void init(final ImmutableMap<String, Object> execEnvVars) throws Exception {};
 
   /**
    * Do the clean up, release resources.
    *
    * @throws Exception if any error occurs
    */
-  protected void cleanup() throws Exception {
-  };
+  protected void cleanup() throws Exception {};
 
   /**
    * Generate next output TupleBatch if possible. Return null immediately if currently no output can be generated.

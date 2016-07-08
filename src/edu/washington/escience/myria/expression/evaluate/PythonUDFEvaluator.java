@@ -32,11 +32,11 @@ import edu.washington.escience.myria.storage.TupleBatch;
 /**
  * An Expression evaluator for Python UDFs. Used in {@link Apply} and {@link StatefulApply}.
  */
-
 public class PythonUDFEvaluator extends GenericEvaluator {
 
   /** logger for this class. */
-  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PythonUDFEvaluator.class);
+  private static final org.slf4j.Logger LOGGER =
+      org.slf4j.LoggerFactory.getLogger(PythonUDFEvaluator.class);
   private final PythonFunctionRegistrar pyFunction;
 
   private final static int PYTHON_EXCEPTION = -3;
@@ -58,7 +58,9 @@ public class PythonUDFEvaluator extends GenericEvaluator {
    * @param expression the expression for the evaluator
    * @param parameters parameters that are passed to the expression
    */
-  public PythonUDFEvaluator(final Expression expression, final ExpressionOperatorParameter parameters,
+  public PythonUDFEvaluator(
+      final Expression expression,
+      final ExpressionOperatorParameter parameters,
       final PythonFunctionRegistrar pyFuncReg) {
     super(expression, parameters);
 
@@ -100,7 +102,6 @@ public class PythonUDFEvaluator extends GenericEvaluator {
 
     LOGGER.info("Left column ID " + leftColumnIdx + "left variable? " + bLeftState);
     LOGGER.info("right column ID " + rightColumnIdx + "right variable? " + bRightState);
-
   }
 
   private void initEvaluator() throws DbException {
@@ -117,14 +118,14 @@ public class PythonUDFEvaluator extends GenericEvaluator {
         LOGGER.info("no python UDF with name {} registered.", pyFunc);
         throw new DbException("No Python UDf with given name registered.");
       } else {
-        pyWorker.sendCodePickle(pyCodeString, 2, outputType);// tuple size is always 2 for binary expression.
+        pyWorker.sendCodePickle(
+            pyCodeString, 2, outputType); // tuple size is always 2 for binary expression.
       }
 
     } catch (Exception e) {
       LOGGER.info(e.getMessage());
       throw new DbException(e);
     }
-
   }
 
   /**
@@ -138,7 +139,11 @@ public class PythonUDFEvaluator extends GenericEvaluator {
   }
 
   @Override
-  public void eval(final ReadableTable tb, final int rowIdx, final WritableColumn result, final ReadableTable state)
+  public void eval(
+      final ReadableTable tb,
+      final int rowIdx,
+      final WritableColumn result,
+      final ReadableTable state)
       throws DbException {
     Object obj = evaluatePython(tb, rowIdx, state);
     if (obj == null) {
@@ -164,16 +169,18 @@ public class PythonUDFEvaluator extends GenericEvaluator {
         default:
           LOGGER.info("type not supported as python Output");
           break;
-
       }
     } catch (Exception e) {
       throw new DbException(e);
     }
-
   }
 
-  public void evalUpdatePyExpression(final ReadableTable tb, final int rowIdx, final AppendableTable result,
-      final ReadableTable state) throws DbException {
+  public void evalUpdatePyExpression(
+      final ReadableTable tb,
+      final int rowIdx,
+      final AppendableTable result,
+      final ReadableTable state)
+      throws DbException {
     // this is only called when updating the state tuple
     Object obj = evaluatePython(tb, rowIdx, state);
     int resultcol = -1;
@@ -205,15 +212,14 @@ public class PythonUDFEvaluator extends GenericEvaluator {
         default:
           LOGGER.info("type not supported as python Output");
           break;
-
       }
     } catch (Exception e) {
       throw new DbException(e);
     }
-
   }
 
-  private Object evaluatePython(final ReadableTable tb, final int rowIdx, final ReadableTable state) throws DbException {
+  private Object evaluatePython(final ReadableTable tb, final int rowIdx, final ReadableTable state)
+      throws DbException {
     LOGGER.info("eval called!");
     if (pyWorker == null) {
       LOGGER.info("need to init pyworker");
@@ -223,8 +229,13 @@ public class PythonUDFEvaluator extends GenericEvaluator {
 
     try {
       if (needsState == false && (bRightState || bLeftState)) {
-        LOGGER.info("needs State: " + needsState + " Right column is state: " + bRightState + " Left column is state: "
-            + bLeftState);
+        LOGGER.info(
+            "needs State: "
+                + needsState
+                + " Right column is state: "
+                + bRightState
+                + " Left column is state: "
+                + bLeftState);
         throw new DbException("this evaluator should not need state!");
 
       } else {
@@ -254,7 +265,6 @@ public class PythonUDFEvaluator extends GenericEvaluator {
       LOGGER.info("Error writing to python stream" + e.getMessage());
       throw new DbException(e);
     }
-
   }
 
   @Override
@@ -298,10 +308,8 @@ public class PythonUDFEvaluator extends GenericEvaluator {
             LOGGER.info("length greater than zero!");
             obj = new byte[l];
             dIn.readFully((byte[]) obj);
-
           }
         }
-
       }
 
     } catch (Exception e) {
@@ -309,10 +317,10 @@ public class PythonUDFEvaluator extends GenericEvaluator {
       throw new DbException(e);
     }
     return obj;
-
   }
 
-  private void writeToStream(final ReadableTable tb, final int row, final int columnIdx, final DataOutputStream dOut)
+  private void writeToStream(
+      final ReadableTable tb, final int row, final int columnIdx, final DataOutputStream dOut)
       throws DbException {
 
     Preconditions.checkNotNull(tb, "tuple input cannot be null");
@@ -374,7 +382,5 @@ public class PythonUDFEvaluator extends GenericEvaluator {
       LOGGER.info(e.getMessage());
       throw new DbException(e);
     }
-
   }
-
 }

@@ -208,38 +208,76 @@ public final class MyriaConstants {
   /**
    * The relation that stores profiling information about which operators executed when.
    */
-  public static final RelationKey EVENT_PROFILING_RELATION = new RelationKey("public", "logs", "Profiling");
+  public static final RelationKey EVENT_PROFILING_RELATION =
+      new RelationKey("public", "logs", "Profiling");
 
   /**
    * The schema of the {@link #EVENT_PROFILING_RELATION}.
    */
-  public static final Schema EVENT_PROFILING_SCHEMA = Schema.ofFields("queryId", Type.LONG_TYPE, "subQueryId",
-      Type.INT_TYPE, "fragmentId", Type.INT_TYPE, "opId", Type.INT_TYPE, "startTime", Type.LONG_TYPE, "endTime",
-      Type.LONG_TYPE, "numTuples", Type.LONG_TYPE);
+  public static final Schema EVENT_PROFILING_SCHEMA =
+      Schema.ofFields(
+          "queryId",
+          Type.LONG_TYPE,
+          "subQueryId",
+          Type.INT_TYPE,
+          "fragmentId",
+          Type.INT_TYPE,
+          "opId",
+          Type.INT_TYPE,
+          "startTime",
+          Type.LONG_TYPE,
+          "endTime",
+          Type.LONG_TYPE,
+          "numTuples",
+          Type.LONG_TYPE);
 
   /**
    * The relation that stores profiling information about sent tuples.
    */
-  public static final RelationKey SENT_PROFILING_RELATION = new RelationKey("public", "logs", "Sending");
+  public static final RelationKey SENT_PROFILING_RELATION =
+      new RelationKey("public", "logs", "Sending");
 
   /**
    * The schema of the {@link #SENT_PROFILING_RELATION}.
    */
-  public static final Schema SENT_PROFILING_SCHEMA = Schema.ofFields("queryId", Type.LONG_TYPE, "subQueryId",
-      Type.INT_TYPE, "fragmentId", Type.INT_TYPE, "nanoTime", Type.LONG_TYPE, "numTuples", Type.LONG_TYPE,
-      "destWorkerId", Type.INT_TYPE);
+  public static final Schema SENT_PROFILING_SCHEMA =
+      Schema.ofFields(
+          "queryId",
+          Type.LONG_TYPE,
+          "subQueryId",
+          Type.INT_TYPE,
+          "fragmentId",
+          Type.INT_TYPE,
+          "nanoTime",
+          Type.LONG_TYPE,
+          "numTuples",
+          Type.LONG_TYPE,
+          "destWorkerId",
+          Type.INT_TYPE);
 
   /**
    * The relation that stores resource profiling information.
    */
-  public static final RelationKey RESOURCE_PROFILING_RELATION = new RelationKey("public", "logs", "Resource");
+  public static final RelationKey RESOURCE_PROFILING_RELATION =
+      new RelationKey("public", "logs", "Resource");
 
   /**
    * The schema of the {@link #RESOURCE_PROFILING_RELATION}.
    */
-  public static final Schema RESOURCE_PROFILING_SCHEMA = Schema.ofFields("timestamp", Type.LONG_TYPE, "opId",
-      Type.INT_TYPE, "measurement", Type.STRING_TYPE, "value", Type.LONG_TYPE, "queryId", Type.LONG_TYPE, "subqueryId",
-      Type.LONG_TYPE);
+  public static final Schema RESOURCE_PROFILING_SCHEMA =
+      Schema.ofFields(
+          "timestamp",
+          Type.LONG_TYPE,
+          "opId",
+          Type.INT_TYPE,
+          "measurement",
+          Type.STRING_TYPE,
+          "value",
+          Type.LONG_TYPE,
+          "queryId",
+          Type.LONG_TYPE,
+          "subqueryId",
+          Type.LONG_TYPE);
 
   /**
    * For how long cached versions of the profiling data should be valid.
@@ -255,17 +293,19 @@ public final class MyriaConstants {
   /**
    * Default imports for janino. Modules imported here can be used in expressions.
    */
-  public static final String[] DEFAULT_JANINO_IMPORTS =
-      { "com.google.common.hash.Hashing", "java.nio.charset.Charset" };
+  public static final String[] DEFAULT_JANINO_IMPORTS = {
+    "com.google.common.hash.Hashing", "java.nio.charset.Charset"
+  };
 
   /** Private constructor to disallow building utility class. */
-  private MyriaConstants() {
-  }
+  private MyriaConstants() {}
 
   /** available fault-tolerance mode for each query in Myria. */
   public static enum FTMode {
     /** three FT modes are supported. */
-    NONE, ABANDON, REJOIN
+    NONE,
+    ABANDON,
+    REJOIN
   };
 
   /** available profiling mode for each query in Myria. */
@@ -282,7 +322,8 @@ public final class MyriaConstants {
 
   public static final RelationKey PYUDF_RELATION = new RelationKey("public", "UDF", "Python");
 
-  public static final Schema PYUDF_SCHEMA = Schema.ofFields("udfname", Type.STRING_TYPE, "binary", Type.STRING_TYPE);
+  public static final Schema PYUDF_SCHEMA =
+      Schema.ofFields("udfname", Type.STRING_TYPE, "binary", Type.STRING_TYPE);
 
   public static enum FunctionLanguage {
     /** Postgres UDF */
@@ -290,13 +331,17 @@ public final class MyriaConstants {
     /** Python UDF */
     PYTHON
   };
+
   public static enum PythonType {
-    INT(1), LONG(2), FLOAT(3), DOUBLE(4), BYTES(5);
+    INT(1),
+    LONG(2),
+    FLOAT(3),
+    DOUBLE(4),
+    BYTES(5);
     private int val;
 
     PythonType(final int val) {
       this.val = val;
-
     }
 
     public int getVal() {
@@ -307,11 +352,9 @@ public final class MyriaConstants {
   /**
    * python executable name
    */
-
   public static final String PYTHONEXEC = "python";
   /*
    * Python worker module
    */
   public static final String PYTHONWORKER = "MyriaPythonWorker.worker";
-
 }

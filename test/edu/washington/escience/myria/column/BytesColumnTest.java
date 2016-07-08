@@ -20,15 +20,17 @@ public class BytesColumnTest {
   @Test
   public void testProto() {
     final BytesColumnBuilder original = new BytesColumnBuilder();
-    original.appendByteBuffer(ByteBuffer.wrap(new String("ByteArray One").getBytes())).appendByteBuffer(
-        ByteBuffer.wrap(new String("ByteArray Two").getBytes())).appendByteBuffer(
-        ByteBuffer.wrap(new String("ByteArray Three").getBytes())).appendByteBuffer(
-        ByteBuffer.wrap(new String("").getBytes())).appendByteBuffer(
-        ByteBuffer.wrap(new String("ByteArray five").getBytes())).appendByteBuffer(
-        ByteBuffer.wrap(new String("ByteArray Six").getBytes()));
+    original
+        .appendByteBuffer(ByteBuffer.wrap(new String("ByteArray One").getBytes()))
+        .appendByteBuffer(ByteBuffer.wrap(new String("ByteArray Two").getBytes()))
+        .appendByteBuffer(ByteBuffer.wrap(new String("ByteArray Three").getBytes()))
+        .appendByteBuffer(ByteBuffer.wrap(new String("").getBytes()))
+        .appendByteBuffer(ByteBuffer.wrap(new String("ByteArray five").getBytes()))
+        .appendByteBuffer(ByteBuffer.wrap(new String("ByteArray Six").getBytes()));
 
     final ColumnMessage serialized = original.build().serializeToProto();
-    final BytesColumn deserialized = BytesColumnBuilder.buildFromProtobuf(serialized, original.size());
+    final BytesColumn deserialized =
+        BytesColumnBuilder.buildFromProtobuf(serialized, original.size());
     assertTrue(original.build().toString().equals(deserialized.toString()));
   }
 

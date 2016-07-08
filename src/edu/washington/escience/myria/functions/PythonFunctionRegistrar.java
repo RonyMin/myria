@@ -14,12 +14,13 @@ import edu.washington.escience.myria.storage.TupleBatch;
 import edu.washington.escience.myria.storage.TupleBatchBuffer;
 
 /**
- * 
+ *
  */
 public class PythonFunctionRegistrar {
 
   /** The logger for this class. */
-  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PythonFunctionRegistrar.class);
+  private static final org.slf4j.Logger LOGGER =
+      org.slf4j.LoggerFactory.getLogger(PythonFunctionRegistrar.class);
 
   /** The connection to the database database. */
   private final JdbcAccessMethod accessMethod;
@@ -34,23 +35,28 @@ public class PythonFunctionRegistrar {
    * @throws DbException if any error occurs
    */
   public PythonFunctionRegistrar(final ConnectionInfo connectionInfo) throws DbException {
-    Preconditions.checkArgument(connectionInfo.getDbms().equals(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL),
+    Preconditions.checkArgument(
+        connectionInfo.getDbms().equals(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL),
         "Profiling only supported with Postgres JDBC connection");
     /* open the database connection */
-    accessMethod = (JdbcAccessMethod) AccessMethod.of(connectionInfo.getDbms(), connectionInfo, false);
+    accessMethod =
+        (JdbcAccessMethod) AccessMethod.of(connectionInfo.getDbms(), connectionInfo, false);
     // create table
-    accessMethod.createUnloggedTableIfNotExists(MyriaConstants.PYUDF_RELATION, MyriaConstants.PYUDF_SCHEMA);
+    accessMethod.createUnloggedTableIfNotExists(
+        MyriaConstants.PYUDF_RELATION, MyriaConstants.PYUDF_SCHEMA);
     udfs = new TupleBatchBuffer(MyriaConstants.PYUDF_SCHEMA);
   }
 
   public void addUDF(final String name, final String binary) throws DbException {
 
-    String tableName = MyriaConstants.PYUDF_RELATION.toString(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL);
+    String tableName =
+        MyriaConstants.PYUDF_RELATION.toString(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL);
 
     StringBuilder sb = new StringBuilder();
     sb.append("DELETE FROM ");
     sb.append(tableName);
-    sb.append(" where udfname='");;
+    sb.append(" where udfname='");
+    ;
     sb.append(name);
     sb.append("'");
     String sql = sb.toString();
@@ -68,7 +74,8 @@ public class PythonFunctionRegistrar {
     StringBuilder sb = new StringBuilder();
     sb.append("Select * from ");
     sb.append(MyriaConstants.PYUDF_RELATION.toString(MyriaConstants.STORAGE_SYSTEM_POSTGRESQL));
-    sb.append("where udfname='");;
+    sb.append("where udfname='");
+    ;
     sb.append(name);
     sb.append("'");
 
@@ -86,7 +93,6 @@ public class PythonFunctionRegistrar {
           String codeString = tb.getString(1, 0);
           return codeString; // return second column of first row.
         }
-
       }
     } catch (Exception e) {
       LOGGER.info(e.getMessage());
@@ -94,7 +100,6 @@ public class PythonFunctionRegistrar {
     }
 
     return null;
-
   };
 
   /**
@@ -110,5 +115,4 @@ public class PythonFunctionRegistrar {
       return false;
     }
   }
-
 }

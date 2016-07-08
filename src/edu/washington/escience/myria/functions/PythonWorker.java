@@ -23,12 +23,13 @@ import edu.washington.escience.myria.MyriaConstants;
 import edu.washington.escience.myria.Type;
 
 /**
- * 
+ *
  */
 public class PythonWorker {
   /***/
   private static final long serialVersionUID = 1L;
-  private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PythonWorker.class);
+  private static final org.slf4j.Logger LOGGER =
+      org.slf4j.LoggerFactory.getLogger(PythonWorker.class);
 
   private ServerSocket serverSocket = null;
   private Socket clientSock = null;
@@ -37,7 +38,7 @@ public class PythonWorker {
   private DataInputStream dIn;
 
   /**
-   * 
+   *
    * @param child child operator that data is fetched from
    * @param emitExpressions expression that created the output
    * @throws DbException
@@ -52,10 +53,10 @@ public class PythonWorker {
       LOGGER.info(e.getMessage());
       throw new DbException("Failed to create Python Worker");
     }
-
   }
 
-  public void sendCodePickle(final String pyCodeString, final int tupleSize, final Type outputType) throws DbException {
+  public void sendCodePickle(final String pyCodeString, final int tupleSize, final Type outputType)
+      throws DbException {
     Preconditions.checkNotNull(pyCodeString);
 
     try {
@@ -78,7 +79,6 @@ public class PythonWorker {
       LOGGER.info("failed to send python code pickle");
       throw new DbException(e);
     }
-
   }
 
   public DataOutputStream getDataOutputStream() {
@@ -110,7 +110,6 @@ public class PythonWorker {
     serverSocket = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
     int a = serverSocket.getLocalPort();
     LOGGER.info("created socket " + a);
-
   }
 
   private void startPythonWorker() throws IOException {
@@ -156,7 +155,6 @@ public class PythonWorker {
         break;
       default:
         throw new DbException("Type not supported for python UDF ");
-
     }
   }
 
@@ -164,9 +162,6 @@ public class PythonWorker {
     if (clientSock != null) {
       dOut = new DataOutputStream(clientSock.getOutputStream());
       dIn = new DataInputStream(clientSock.getInputStream());
-
     }
-
   }
-
 }

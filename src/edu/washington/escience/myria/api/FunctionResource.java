@@ -41,8 +41,7 @@ import edu.washington.escience.myria.parallel.Server;
 @Api(value = "/function", description = "Operations on functions")
 public class FunctionResource {
   /** The Myria server running on the master. */
-  @Context
-  private Server server;
+  @Context private Server server;
   /** Information about the URL of the request. */
 
   /** Logger. */
@@ -61,7 +60,7 @@ public class FunctionResource {
 
   /**
    * Creates an Function based on DbFunctionEncoding
-   * 
+   *
    * @POST
    */
   @POST
@@ -73,8 +72,14 @@ public class FunctionResource {
     long queryId;
     try {
       queryId =
-          server.createFunction(encoding.name, encoding.text, encoding.lang, encoding.workers, encoding.binary,
-              encoding.inputSchema, encoding.outputType);
+          server.createFunction(
+              encoding.name,
+              encoding.text,
+              encoding.lang,
+              encoding.workers,
+              encoding.binary,
+              encoding.inputSchema,
+              encoding.outputType);
     } catch (Exception e) {
       throw new DbException();
     }
@@ -85,10 +90,19 @@ public class FunctionResource {
 
   @GET
   @ApiOperation(value = "get information about a function", response = FunctionStatus.class)
-  @ApiResponses(value = { @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Function not found", response = String.class) })
-  @Produces({ MediaType.APPLICATION_OCTET_STREAM, MyriaApiConstants.JSON_UTF_8 })
+  @ApiResponses(
+    value = {
+      @ApiResponse(
+        code = HttpStatus.SC_NOT_FOUND,
+        message = "Function not found",
+        response = String.class
+      )
+    }
+  )
+  @Produces({MediaType.APPLICATION_OCTET_STREAM, MyriaApiConstants.JSON_UTF_8})
   @Path("/{name}")
-  public Response getFunction(@PathParam("name") final String name) throws DbException, IOException {
+  public Response getFunction(@PathParam("name") final String name)
+      throws DbException, IOException {
 
     String functionName = name;
     LOGGER.info("get function!");
@@ -102,5 +116,4 @@ public class FunctionResource {
 
     return Response.ok(status).build();
   }
-
 }

@@ -1,7 +1,6 @@
 /**
  *
  */
-
 package edu.washington.escience.myria.column.mutable;
 
 import java.nio.ByteBuffer;
@@ -13,7 +12,7 @@ import edu.washington.escience.myria.column.BytesColumn;
 
 /**
  * A mutable column of byteBuffer values.
- * 
+ *
  */
 public final class BytesMutableColumn extends MutableColumn<ByteBuffer> {
   /** Required for Java serialization. */
@@ -25,7 +24,7 @@ public final class BytesMutableColumn extends MutableColumn<ByteBuffer> {
 
   /**
    * Constructs a new column.
-   * 
+   *
    * @param data the data
    * @param numData number of tuples.
    * */

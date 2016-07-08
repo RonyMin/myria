@@ -20,7 +20,7 @@ import edu.washington.escience.myria.util.MyriaUtils;
 
 /**
  * A column of ByteBuffer values.
- * 
+ *
  */
 public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
 
@@ -45,7 +45,7 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
 
   /**
    * copy.
-   * 
+   *
    * @param numDates the actual num strings in the data
    * @param data the underlying data
    * */
@@ -56,16 +56,18 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
 
   /*
    * Constructs a DateColumn by deserializing the given ColumnMessage.
-   * 
+   *
    * @param message a ColumnMessage containing the contents of this column.
-   * 
+   *
    * @param numTuples num tuples in the column message
-   * 
+   *
    * @return the built column
    */
   public static BytesColumn buildFromProtobuf(final ColumnMessage message, final int numTuples) {
-    Preconditions.checkArgument(message.getType().ordinal() == ColumnMessage.Type.BYTES_VALUE,
-        "Trying to construct Bytes from non-bytes ColumnMessage %s", message.getType());
+    Preconditions.checkArgument(
+        message.getType().ordinal() == ColumnMessage.Type.BYTES_VALUE,
+        "Trying to construct Bytes from non-bytes ColumnMessage %s",
+        message.getType());
 
     Preconditions.checkArgument(message.hasBytesColumn(), "ColumnMessage is missing DateColumn");
     final BytesColumnMessage BytesColumn = message.getBytesColumn();
@@ -77,12 +79,13 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
     }
 
     return new BytesColumnBuilder(newData, numTuples).build();
-
   }
 
   @Override
-  public BytesColumnBuilder appendByteBuffer(final ByteBuffer value) throws BufferOverflowException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+  public BytesColumnBuilder appendByteBuffer(final ByteBuffer value)
+      throws BufferOverflowException {
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     Objects.requireNonNull(value, "value");
     if (numBB >= TupleBatch.BATCH_SIZE) {
       throw new BufferOverflowException();
@@ -97,17 +100,19 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
   }
 
   @Override
-  public BytesColumnBuilder appendFromJdbc(final ResultSet resultSet, final int jdbcIndex) throws SQLException,
-      BufferOverflowException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+  public BytesColumnBuilder appendFromJdbc(final ResultSet resultSet, final int jdbcIndex)
+      throws SQLException, BufferOverflowException {
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     // TODO: fix
     return appendByteBuffer(ByteBuffer.wrap(resultSet.getBytes(jdbcIndex)));
   }
 
   @Override
-  public BytesColumnBuilder appendFromSQLite(final SQLiteStatement statement, final int index) throws SQLiteException,
-      BufferOverflowException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+  public BytesColumnBuilder appendFromSQLite(final SQLiteStatement statement, final int index)
+      throws SQLiteException, BufferOverflowException {
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
 
     return appendByteBuffer(ByteBuffer.wrap(statement.columnBlob(index)));
   }
@@ -130,8 +135,10 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
   }
 
   @Override
-  public void replaceByteBuffer(final ByteBuffer value, final int row) throws IndexOutOfBoundsException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+  public void replaceByteBuffer(final ByteBuffer value, final int row)
+      throws IndexOutOfBoundsException {
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     Preconditions.checkElementIndex(row, numBB);
     Preconditions.checkNotNull(value);
     data[row] = value;
@@ -139,7 +146,8 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
 
   @Override
   public BytesColumnBuilder expand(final int size) throws BufferOverflowException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     Preconditions.checkArgument(size >= 0);
     if (numBB + size > data.length) {
       throw new BufferOverflowException();
@@ -150,7 +158,8 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
 
   @Override
   public BytesColumnBuilder expandAll() {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     numBB = data.length;
     return this;
   }
@@ -169,7 +178,8 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
   @Deprecated
   @Override
   public ColumnBuilder<ByteBuffer> appendObject(final Object value) throws BufferOverflowException {
-    Preconditions.checkState(!built, "No further changes are allowed after the builder has built the column.");
+    Preconditions.checkState(
+        !built, "No further changes are allowed after the builder has built the column.");
     return appendByteBuffer((ByteBuffer) MyriaUtils.ensureObjectIsValidType(value));
   }
 
@@ -179,5 +189,4 @@ public final class BytesColumnBuilder extends ColumnBuilder<ByteBuffer> {
     System.arraycopy(data, 0, newData, 0, numBB);
     return new BytesColumnBuilder(newData, numBB);
   }
-
 }

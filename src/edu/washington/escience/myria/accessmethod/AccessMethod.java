@@ -34,7 +34,8 @@ public abstract class AccessMethod {
    * @return the object of type AccessMethod
    * @throws DbException if anything goes wrong on connecting
    */
-  public static AccessMethod of(final String dbms, final ConnectionInfo connectionInfo, final Boolean readOnly)
+  public static AccessMethod of(
+      final String dbms, final ConnectionInfo connectionInfo, final Boolean readOnly)
       throws DbException {
     switch (dbms) {
       case MyriaConstants.STORAGE_SYSTEM_SQLITE:
@@ -54,7 +55,8 @@ public abstract class AccessMethod {
    * @param readOnly whether read-only connection or not
    * @throws DbException if there is an error making the connection.
    */
-  abstract void connect(final ConnectionInfo connectionInfo, final Boolean readOnly) throws DbException;
+  abstract void connect(final ConnectionInfo connectionInfo, final Boolean readOnly)
+      throws DbException;
 
   /**
    * Sets the connection to be read-only or writable.
@@ -72,7 +74,8 @@ public abstract class AccessMethod {
    *
    * @throws DbException if there is an error inserting the tuples.
    */
-  public abstract void tupleBatchInsert(final RelationKey relationKey, final TupleBatch tupleBatch) throws DbException;
+  public abstract void tupleBatchInsert(final RelationKey relationKey, final TupleBatch tupleBatch)
+      throws DbException;
 
   /**
    * Runs a query and expose the results as an Iterator<TupleBatch>.
@@ -82,8 +85,8 @@ public abstract class AccessMethod {
    * @return an Iterator<TupleBatch> containing the results.
    * @throws DbException if there is an error getting tuples.
    */
-  public abstract Iterator<TupleBatch> tupleBatchIteratorFromQuery(final String queryString, final Schema schema)
-      throws DbException;
+  public abstract Iterator<TupleBatch> tupleBatchIteratorFromQuery(
+      final String queryString, final Schema schema) throws DbException;
 
   /**
    * Executes a DDL command.
@@ -105,8 +108,7 @@ public abstract class AccessMethod {
    *
    * @throws DbException if there is an error in the database.
    */
-  public void init() throws DbException {
-  }
+  public void init() throws DbException {}
 
   /**
    * Generates the insert statement string for a relation in the database.
@@ -124,7 +126,8 @@ public abstract class AccessMethod {
    * @param relationKey the relation name
    * @return the create table statement string
    */
-  public abstract String createIfNotExistsStatementFromSchema(Schema schema, RelationKey relationKey);
+  public abstract String createIfNotExistsStatementFromSchema(
+      Schema schema, RelationKey relationKey);
 
   /**
    * Creates a table in the database, if it does not already exist.
@@ -133,7 +136,8 @@ public abstract class AccessMethod {
    * @param schema the relation schema
    * @throws DbException if anything goes wrong
    */
-  public abstract void createTableIfNotExists(RelationKey relationKey, Schema schema) throws DbException;
+  public abstract void createTableIfNotExists(RelationKey relationKey, Schema schema)
+      throws DbException;
 
   /**
    * Overwrite <code>oldRelation</code> with <code>newRelation</code> by dropping <code>oldRelation</code> if it exists
@@ -143,7 +147,8 @@ public abstract class AccessMethod {
    * @param newRelation the table replacing <code>old</code>.
    * @throws DbException if there is an error during this operation.
    */
-  public abstract void dropAndRenameTables(RelationKey oldRelation, RelationKey newRelation) throws DbException;
+  public abstract void dropAndRenameTables(RelationKey oldRelation, RelationKey newRelation)
+      throws DbException;
 
   /**
    * Drop the specified table, if it exists.
@@ -167,8 +172,9 @@ public abstract class AccessMethod {
    * @param indexes a list of indexes to be created; each entry is a list of column indices.
    * @throws DbException if there is an error in the DBMS.
    */
-  public abstract void createIndexes(final RelationKey relationKey, final Schema schema,
-      final List<List<IndexRef>> indexes) throws DbException;
+  public abstract void createIndexes(
+      final RelationKey relationKey, final Schema schema, final List<List<IndexRef>> indexes)
+      throws DbException;
 
   /**
    * Creates an indexes on the provided temporary table only when it doesn't exist.
@@ -178,12 +184,13 @@ public abstract class AccessMethod {
    * @param index the index to be created; each entry is a list of column indices.
    * @throws DbException if there is an error in the DBMS.
    */
-  public abstract void createIndexIfNotExists(final RelationKey relationKey, final Schema schema,
-      final List<IndexRef> index) throws DbException;
+  public abstract void createIndexIfNotExists(
+      final RelationKey relationKey, final Schema schema, final List<IndexRef> index)
+      throws DbException;
 
   /**
    * Runs a sql command
-   * 
+   *
    * @param command
    * @throws DbException
    */
@@ -197,11 +204,9 @@ public abstract class AccessMethod {
     /** Required for Java serialization. */
     private static final long serialVersionUID = 1L;
     /** Which column should be hashed. */
-    @JsonProperty
-    private final int column;
+    @JsonProperty private final int column;
     /** True if the column should be hashed in ascending order. */
-    @JsonProperty
-    private final boolean ascending;
+    @JsonProperty private final boolean ascending;
 
     /**
      * This is not really unused, it's used automagically by Jackson deserialization.
@@ -260,7 +265,8 @@ public abstract class AccessMethod {
      * @param ascending true if the column should be hashed in ascending order.
      * @return the index ref to the column
      */
-    public static IndexRef of(final Schema schema, final String columnName, final boolean ascending) {
+    public static IndexRef of(
+        final Schema schema, final String columnName, final boolean ascending) {
       return IndexRef.of(schema.columnNameToIndex(columnName), ascending);
     }
 
