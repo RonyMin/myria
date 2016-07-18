@@ -5,6 +5,7 @@ import time
 import socket
 import traceback
 import struct
+from myria import *
 
 from MyriaPythonWorker.serializers import read_int, write_int,SpecialLengths,write_with_length,PickleSerializer
 
@@ -41,7 +42,7 @@ def main(infile, outfile):
     except Exception:
         try:
             write_int(SpecialLengths.PYTHON_EXCEPTION_THROWN,outfile)
-            write_with_length(traceback.format_exc().encode("utf-8"),outfile,5)
+            write_with_length(traceback.format_exc().encode("utf-8"),outfile,5,pickleSer)
             print(traceback.format_exc(), file=sys.stderr)
         except Exception:
             print("python process failed with exception: ", file=sys.stderr)
