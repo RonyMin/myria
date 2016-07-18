@@ -14,6 +14,7 @@
     "emitExpressions":
     [{
         "outputName": "denoised",
+        "outputType": "BYTES_TYPE",
         "rootExpressionOperator": {
           "type": "PYUDF",
           "name": "denoise",

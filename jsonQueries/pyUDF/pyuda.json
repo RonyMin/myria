@@ -48,6 +48,7 @@
                                     "type":"STATE"
                                  },
                                  "type": "PYUDF",
+                                 "outputType":"BYTES_TYPE",
                                  "name":"mean"
                               },
                               "outputName":"uda0"
@@ -80,6 +81,7 @@
                                     "type":"STATE"
                                  },
                                  "type": "PYUDF",
+                                 "outputType":"BYTES_TYPE",
                                  "name": "add"
                               },
                               "outputName":"_sum__191"
