@@ -377,7 +377,8 @@ public class SingleGroupByAggregate extends UnaryOperator {
 
     gColumnType = inputSchema.getColumnType(gColumn);
     try {
-      for (Aggregator a : AggUtils.allocateAggs(factories, inputSchema, null)) {
+      for (Aggregator a :
+          AggUtils.allocateAggs(factories, inputSchema, getPythonFunctionRegistrar())) {
         outputSchema = Schema.merge(outputSchema, a.getResultSchema());
       }
     } catch (DbException e) {
