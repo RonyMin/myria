@@ -1,10 +1,12 @@
 package edu.washington.escience.myria.parallel;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,6 +89,7 @@ import edu.washington.escience.myria.expression.MinusExpression;
 import edu.washington.escience.myria.expression.VariableExpression;
 import edu.washington.escience.myria.expression.WorkerIdExpression;
 import edu.washington.escience.myria.io.AmazonS3Source;
+import edu.washington.escience.myria.io.ByteSink;
 import edu.washington.escience.myria.io.DataSink;
 import edu.washington.escience.myria.io.UriSink;
 import edu.washington.escience.myria.operator.Apply;
@@ -119,6 +122,7 @@ import edu.washington.escience.myria.parallel.ipc.IPCConnectionPool;
 import edu.washington.escience.myria.parallel.ipc.IPCMessage;
 import edu.washington.escience.myria.parallel.ipc.InJVMLoopbackChannelSink;
 import edu.washington.escience.myria.parallel.ipc.QueueBasedShortMessageProcessor;
+import edu.washington.escience.myria.perfenforce.PerfEnforceDriver;
 import edu.washington.escience.myria.proto.ControlProto.ControlMessage;
 import edu.washington.escience.myria.proto.QueryProto.QueryMessage;
 import edu.washington.escience.myria.proto.QueryProto.QueryReport;
@@ -436,6 +440,9 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
   /** The socket info for the master. */
   private final SocketInfo masterSocketInfo;
 
+  /** The PerfEnforceDriver */
+  private PerfEnforceDriver perfEnforceDriver;
+
   /**
    * @return my execution environment variables for init of operators.
    */
@@ -450,6 +457,8 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
     return QueryExecutionMode.NON_BLOCKING;
   }
 
+
+  private final String instancePath;
   private final int connectTimeoutMillis;
   private final int sendBufferSize;
   private final int receiveBufferSize;
@@ -480,7 +489,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
   public Server(
       @Parameter(MasterHost.class) final String masterHost,
       @Parameter(MasterRpcPort.class) final int masterPort,
-      @Parameter(DefaultInstancePath.class) final String catalogPath,
+      @Parameter(DefaultInstancePath.class) final String instancePath,
       @Parameter(StorageDbms.class) final String databaseSystem,
       @Parameter(TcpConnectionTimeoutMillis.class) final int connectTimeoutMillis,
       @Parameter(TcpSendBufferSizeBytes.class) final int sendBufferSize,
@@ -492,6 +501,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
       @Parameter(PersistUri.class) final String persistURI,
       final Injector injector) {
 
+	this.instancePath = instancePath;
     this.connectTimeoutMillis = connectTimeoutMillis;
     this.sendBufferSize = sendBufferSize;
     this.receiveBufferSize = receiveBufferSize;
@@ -503,7 +513,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
     this.injector = injector;
 
     masterSocketInfo = new SocketInfo(masterHost, masterPort);
-    this.catalogPath = catalogPath;
+    this.catalogPath = instancePath;
 
     execEnvVars = new ConcurrentHashMap<>();
     execEnvVars.put(MyriaConstants.EXEC_ENV_VAR_NODE_ID, MyriaConstants.MASTER_ID);
@@ -736,6 +746,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
           workerIds,
           false);
     }
+    perfEnforceDriver = new PerfEnforceDriver(instancePath);
   }
 
   /**
@@ -1175,7 +1186,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
             workerId,
             new SubQueryPlan(
                 new DbCreateView(
-                    EmptyRelation.of(Schema.EMPTY_SCHEMA), viewName, viewDefinition, null)));
+                    EmptyRelation.of(Schema.EMPTY_SCHEMA), viewName, viewDefinition, true, null)));
       }
       ListenableFuture<Query> qf =
           queryManager.submitQuery(
@@ -1183,6 +1194,47 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
               "create view",
               "create view",
               new SubQueryPlan(new EmptySink(new EOSSource())),
+              workerPlans);
+      try {
+        queryID = qf.get().getQueryId();
+      } catch (ExecutionException e) {
+        throw new DbException("Error executing query", e.getCause());
+      }
+    } catch (CatalogException e) {
+      throw new DbException(e);
+    }
+
+    return queryID;
+  }
+
+  /**
+   * Create a materialized view
+   */
+  public long createMaterializedView(
+      final String viewName, final String viewDefinition, final Set<Integer> workers)
+      throws DbException, InterruptedException {
+    long queryID;
+    Set<Integer> actualWorkers = workers;
+    if (workers == null) {
+      actualWorkers = getWorkers().keySet();
+    }
+
+    /* Create the view */
+    try {
+      Map<Integer, SubQueryPlan> workerPlans = new HashMap<>();
+      for (Integer workerId : actualWorkers) {
+        workerPlans.put(
+            workerId,
+            new SubQueryPlan(
+                new DbCreateView(
+                    EmptyRelation.of(Schema.EMPTY_SCHEMA), viewName, viewDefinition, true, null)));
+      }
+      ListenableFuture<Query> qf =
+          queryManager.submitQuery(
+              "create materialized view",
+              "create materialized view",
+              "create materialized view",
+              new SubQueryPlan(new SinkRoot(new EOSSource())),
               workerPlans);
       try {
         queryID = qf.get().getQueryId();
@@ -1317,6 +1369,43 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
       throw new DbException(e);
     }
     return queryID;
+  }
+
+  public String[] executeSQLStatement(
+      final String sqlString, final Schema outputSchema, final Set<Integer> workers)
+      throws DbException {
+
+    ByteSink byteSink = new ByteSink();
+    TupleWriter writer = new CsvTupleWriter();
+
+    DbQueryScan scan = new DbQueryScan(sqlString, outputSchema);
+    final ExchangePairID operatorId = ExchangePairID.newID();
+    CollectProducer producer = new CollectProducer(scan, operatorId, MyriaConstants.MASTER_ID);
+    SubQueryPlan workerPlan = new SubQueryPlan(producer);
+    Map<Integer, SubQueryPlan> workerPlans = new HashMap<>(workers.size());
+    for (Integer w : workers) {
+      workerPlans.put(w, workerPlan);
+    }
+    final CollectConsumer consumer = new CollectConsumer(outputSchema, operatorId, workers);
+    DataOutput output = new DataOutput(consumer, writer, byteSink);
+    final SubQueryPlan masterPlan = new SubQueryPlan(output);
+
+    String planString = "execute sql statement : " + sqlString;
+    try {
+      queryManager.submitQuery(planString, planString, planString, masterPlan, workerPlans).get();
+    } catch (Exception e) {
+      throw new DbException();
+    }
+
+    byte[] responseBytes;
+    try {
+      responseBytes = ((ByteArrayOutputStream) byteSink.getOutputStream()).toByteArray();
+    } catch (IOException e) {
+      throw new DbException();
+    }
+    String response = new String(responseBytes, Charset.forName("UTF-8"));
+    String[] tuples = response.split("\r\n");
+    return tuples;
   }
 
   /**
@@ -2411,5 +2500,12 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
    */
   public MasterCatalog getCatalog() {
     return catalog;
+  }
+
+  /**
+   * @return the perfenforce driver
+   */
+  public PerfEnforceDriver getPerfEnforceDriver() {
+    return perfEnforceDriver;
   }
 }
