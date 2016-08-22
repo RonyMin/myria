@@ -457,7 +457,6 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
     return QueryExecutionMode.NON_BLOCKING;
   }
 
-
   private final String instancePath;
   private final int connectTimeoutMillis;
   private final int sendBufferSize;
@@ -501,7 +500,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
       @Parameter(PersistUri.class) final String persistURI,
       final Injector injector) {
 
-	this.instancePath = instancePath;
+    this.instancePath = instancePath;
     this.connectTimeoutMillis = connectTimeoutMillis;
     this.sendBufferSize = sendBufferSize;
     this.receiveBufferSize = receiveBufferSize;
