@@ -745,7 +745,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
           workerIds,
           false);
     }
-    perfEnforceDriver = new PerfEnforceDriver(this,instancePath);
+    perfEnforceDriver = new PerfEnforceDriver(this, instancePath);
   }
 
   /**
