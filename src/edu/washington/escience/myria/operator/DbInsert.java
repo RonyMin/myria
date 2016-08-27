@@ -244,7 +244,7 @@ public class DbInsert extends AbstractDbInsert {
       tempRelationKey =
           RelationKey.of(relationKey.getUserName(), "MyriaSysTemp", relationKey.getRelationName());
       /* Drop the temp table, if it exists. */
-      accessMethod.dropTableIfExistsCascade(tempRelationKey);
+      accessMethod.dropTableIfExists(tempRelationKey);
     } else {
       /* Otherwise go ahead and write into the same table. */
       tempRelationKey = relationKey;

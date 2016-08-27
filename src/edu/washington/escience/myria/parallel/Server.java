@@ -1377,7 +1377,10 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
     try {
       Map<Integer, SubQueryPlan> workerPlans = new HashMap<>();
       for (Integer workerId : workers) {
-        workerPlans.put(workerId, new SubQueryPlan(new DbExecute(null, sqlString, null)));
+        workerPlans.put(
+            workerId,
+            new SubQueryPlan(
+                new DbExecute(EmptyRelation.of(Schema.EMPTY_SCHEMA), sqlString, null)));
       }
       ListenableFuture<Query> qf =
           queryManager.submitQuery(
@@ -1407,12 +1410,12 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
     final ExchangePairID operatorId = ExchangePairID.newID();
     CollectProducer producer = new CollectProducer(scan, operatorId, MyriaConstants.MASTER_ID);
     SubQueryPlan workerPlan = new SubQueryPlan(producer);
-    Map<Integer, SubQueryPlan> workerPlans = new HashMap<>(workers.size());
+    Map<Integer, SubQueryPlan> workerPlans = new HashMap<>();
     for (Integer w : workers) {
       workerPlans.put(w, workerPlan);
     }
     final CollectConsumer consumer = new CollectConsumer(outputSchema, operatorId, workers);
-    DataOutput output = new DataOutput(consumer, writer, byteSink);
+    DataOutput output = new DataOutput(consumer, writer, byteSink, false);
     final SubQueryPlan masterPlan = new SubQueryPlan(output);
 
     String planString = "execute sql statement : " + sqlString;
