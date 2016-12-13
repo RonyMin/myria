@@ -1233,7 +1233,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
               "create materialized view",
               "create materialized view",
               "create materialized view",
-              new SubQueryPlan(new SinkRoot(new EOSSource())),
+              new SubQueryPlan(new EmptySink(new EOSSource())),
               workerPlans);
       try {
         queryID = qf.get().getQueryId();
@@ -1387,7 +1387,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
               "sql execute " + sqlString,
               "sql execute " + sqlString,
               "sql execute " + sqlString,
-              new SubQueryPlan(new SinkRoot(new EOSSource())),
+              new SubQueryPlan(new EmptySink(new EOSSource())),
               workerPlans);
       try {
         qf.get();
@@ -1415,7 +1415,7 @@ public final class Server implements TaskMessageSource, EventHandler<DriverMessa
       workerPlans.put(w, workerPlan);
     }
     final CollectConsumer consumer = new CollectConsumer(outputSchema, operatorId, workers);
-    DataOutput output = new DataOutput(consumer, writer, byteSink, false);
+    TupleSink output = new TupleSink(consumer, writer, byteSink, false);
     final SubQueryPlan masterPlan = new SubQueryPlan(output);
 
     String planString = "execute sql statement : " + sqlString;
